@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 8
+%define mdkrelease %mkrel 9
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -34,6 +34,7 @@ Patch3:  module-init-tools-3.2-pre8-all-defaults.patch
 Patch7:  module-init-tools-3.2-pre8-modprobe-default.patch
 Patch8:  module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
 Patch9:  module-init-tools-3.0-failed.unknown.symbol.patch
+Patch10: module-init-tools-3.3-pre11-insmod-strrchr.patch
 License: GPL
 Group: System/Kernel and hardware
 BuildRoot: %{_tmppath}/%{name}-buildroot
@@ -59,6 +60,7 @@ serves the same function that the "modutils" package serves for Linux
 %patch7 -p1 -b .modprobe-default
 %patch8 -p1 -b .generate-modprobe.conf-no-defaults
 %patch9 -p1 -b .failed-symb
+%patch10 -p1 -b .fix_insmod_strrchr
 
 %build
 %serverbuild
