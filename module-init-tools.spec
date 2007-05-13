@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 9
+%define mdkrelease %mkrel 10
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -19,6 +19,8 @@
 %define tarname %name-%version
 %endif
 
+# We must remove alternatives before new files are installed; otherwise
+# they are wiped out by postun script of older version
 %define toalternate insmod lsmod modprobe rmmod depmod modinfo
 
 Summary: Tools for managing Linux kernel modules
@@ -39,8 +41,6 @@ License: GPL
 Group: System/Kernel and hardware
 BuildRoot: %{_tmppath}/%{name}-buildroot
 Url: %{url}
-Requires(post): /usr/sbin/update-alternatives
-Requires(postun): /usr/sbin/update-alternatives
 Conflicts: modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
 BuildRequires: autoconf2.5
 BuildRequires: glibc-static-devel
@@ -73,28 +73,19 @@ rm -rf $RPM_BUILD_ROOT
 
 mv $RPM_BUILD_ROOT/bin/lsmod $RPM_BUILD_ROOT/sbin
 
-pushd $RPM_BUILD_ROOT/sbin && {
-for i in %{toalternate};do
-	mv $i $i-25
-done
-} && popd
-
 rm -rf $RPM_BUILD_ROOT/%{_mandir}
 for n in 5 8;do
 	install -d $RPM_BUILD_ROOT/%{_mandir}/man$n/
 	for i in *.$n;do
-		[[ $n == 8 ]] && ext="-25" || ext=""
-		install -m644 $i $RPM_BUILD_ROOT/%{_mandir}/man${n}/${i%%.*}${ext}.$n
+		install -m644 $i $RPM_BUILD_ROOT/%{_mandir}/man${n}/$i
 	done
 done
 
+%ifarch %{ix86}
 pushd $RPM_BUILD_ROOT/sbin && {
-%ifnarch %{ix86}
-	mv insmod.static insmod.static-25
-%else
 	rm -f insmod.static
-%endif
 } && popd
+%endif
 
 install -d -m755 $RPM_BUILD_ROOT/etc/
 touch $RPM_BUILD_ROOT/etc/modprobe.conf
@@ -105,15 +96,19 @@ install -d -m755 $RPM_BUILD_ROOT/lib/module-init-tools
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/module-init-tools
 install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/lib/module-init-tools
 
-%post
-for i in %{toalternate};do
-	update-alternatives --install /sbin/$i $i /sbin/$i-25 %{priority}
-	update-alternatives --install \
-	%{_mandir}/man8/$i.8%{_extension} man-$i %{_mandir}/man8/$i-25.8%{_extension} %{priority}
-	[ -e /sbin/$i ] || update-alternatives --auto $i
-	[ -e %{_mandir}/$i.8%{_extension} ] || update-alternatives --auto man-$i
+# We have to remove alternatives before postun for old version runs,
+# otherwise either dummy entries remain without any possibility to clean up
+# or newly installed binaries are silentlty removed
+%triggerprein -- module-init-tools < 3.3-pre11.10mdv2008.0
+for i in %{toalternate}; do
+	update-alternatives --remove $i /sbin/$i-25
+	update-alternatives --remove $i /sbin/$i-24
+	update-alternatives --remove man-$i %{_mandir}/man8/$i-25.8%{_extension}
+	update-alternatives --remove man-$i %{_mandir}/man8/$i-24.8%{_extension}
 done
+exit 0
 
+%post
 if [ ! -s /etc/modprobe.conf ]; then
 	MODPROBE_CONF=/etc/modprobe.conf
 elif [ -e /etc/modprobe.conf.rpmnew ]; then
@@ -130,18 +125,7 @@ if [ -s /etc/modprobe.conf ]; then
 	perl -pi -e 's/(^\s*include\s.*modprobe\.(default|compat).*)/# This file is now included automatically by modprobe\n# $1/' /etc/modprobe.conf
 fi
 
-%postun
-for i in %{toalternate};do
-	if [ ! -f /sbin/$i-25 ]; then
-	  update-alternatives --remove $i /sbin/$i
-	fi
-	[ -e /sbin/$i ] || update-alternatives --auto $i
-
-	if [ ! -f %{_mandir}/man8/$i-25.8%{_extension} ]; then
-	  update-alternatives --remove man-$i %{_mandir}/man8/$i.8%{_extension}
-	fi
-	[ -e %{_mandir}/man8/$i.8%{_extension} ] || update-alternatives --auto man-$i
-done
+exit 0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -156,7 +140,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir /lib/module-init-tools
 /lib/module-init-tools/*
 /sbin/generate-modprobe.conf
-/sbin/*25
+/sbin/*
 %{_mandir}/*/*
 
 
