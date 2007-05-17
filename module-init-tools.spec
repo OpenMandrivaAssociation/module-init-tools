@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 10
+%define mdkrelease %mkrel 11
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -31,6 +31,8 @@ Source0: %{url}/%{tarname}.tar.bz2
 Source3: modprobe.default
 Source4: modprobe.compat
 Source5: modprobe.preload
+# from Fedora package
+Source6: blacklist-compat
 Patch2:  module-init-tools-3.2-pre8-dont-break-depend.patch
 Patch3:  module-init-tools-3.2-pre8-all-defaults.patch
 Patch7:  module-init-tools-3.2-pre8-modprobe-default.patch
@@ -91,6 +93,7 @@ install -d -m755 $RPM_BUILD_ROOT/etc/
 touch $RPM_BUILD_ROOT/etc/modprobe.conf
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc
 install -d -m755 $RPM_BUILD_ROOT/etc/modprobe.d/
+install -m 644 %{SOURCE6} $RPM_BUILD_ROOT/etc/modprobe.d
 
 install -d -m755 $RPM_BUILD_ROOT/lib/module-init-tools
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/module-init-tools
@@ -137,6 +140,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/modprobe.conf
 %config(noreplace) /etc/modprobe.preload
 %dir /etc/modprobe.d/
+/etc/modprobe.d/*
 %dir /lib/module-init-tools
 /lib/module-init-tools/*
 /sbin/generate-modprobe.conf
