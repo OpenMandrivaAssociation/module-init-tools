@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 12
+%define mdkrelease %mkrel 13
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -34,6 +34,7 @@ Source4: modprobe.compat
 Source5: modprobe.preload
 # from Fedora package
 Source6: blacklist-compat
+Patch1:  module-init-tools-libify.patch
 Patch2:  module-init-tools-3.2-pre8-dont-break-depend.patch
 Patch3:  module-init-tools-3.2-pre8-all-defaults.patch
 Patch7:  module-init-tools-3.2-pre8-modprobe-default.patch
@@ -56,8 +57,17 @@ removing kernel modules for Linux (versions 2.5.47 and above). It
 serves the same function that the "modutils" package serves for Linux
 2.4.
 
+%package devel
+Summary: Development files for %{name}
+Group: Development/C
+
+%description devel
+Development files for %{name}
+
+
 %prep
 %setup -q -n %{tarname}
+%patch1 -p1 -b .lib
 %patch2 -p1 -b .dont-break-depend
 %patch3 -p1 -b .all-defaults
 %patch7 -p1 -b .modprobe-default
@@ -67,8 +77,13 @@ serves the same function that the "modutils" package serves for Linux
 
 %build
 %serverbuild
+rm -f Makefile{,.in}
+aclocal --force
+automake -c -f
+autoconf
 %configure2_5x --enable-zlib
-%make
+%make  CFLAGS="%{optflags} -fPIC"
+ar r libmodprobe.{a,o} zlibsupport.o
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -83,6 +98,9 @@ for n in 5 8;do
 		install -m644 $i $RPM_BUILD_ROOT/%{_mandir}/man${n}/$i
 	done
 done
+mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
+install -m644 libmodprobe.a $RPM_BUILD_ROOT%_libdir
+install -m644 modprobe.h $RPM_BUILD_ROOT%_includedir
 
 %ifarch %{ix86}
 pushd $RPM_BUILD_ROOT/sbin && {
@@ -148,4 +166,9 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/*
 %{_mandir}/*/*
 
+
+%files devel
+%defattr(-,root,root)
+%{_libdir}/libmodprobe.a
+%_includedir/modprobe.h
 
