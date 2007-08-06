@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 13
+%define mdkrelease %mkrel 14
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -100,7 +100,7 @@ for n in 5 8;do
 done
 mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
 install -m644 libmodprobe.a $RPM_BUILD_ROOT%_libdir
-install -m644 modprobe.h $RPM_BUILD_ROOT%_includedir
+install -m644 modprobe.h list.h $RPM_BUILD_ROOT%_includedir
 
 %ifarch %{ix86}
 pushd $RPM_BUILD_ROOT/sbin && {
@@ -170,5 +170,5 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root)
 %{_libdir}/libmodprobe.a
-%_includedir/modprobe.h
+%_includedir/*.h
 
