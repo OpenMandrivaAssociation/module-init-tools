@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 17
+%define mdkrelease %mkrel 18
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -72,6 +72,7 @@ Library for %{name}.
 %package -n %devellibname
 Summary: Development files for %{name}
 Group: Development/C
+Provides: module-init-tools-devel
 
 %description -n %devellibname
 Development files for %{name}
