@@ -2,12 +2,15 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 14
+%define mdkrelease %mkrel 15
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
 %define _libdir /lib
 %define _libexecdir /lib
+%define major 0
+%define libname %mklibname modprobe %major
+%define devellibname %mklibname -d modprobe %major
 
 %define pre 11
 
@@ -57,11 +60,19 @@ removing kernel modules for Linux (versions 2.5.47 and above). It
 serves the same function that the "modutils" package serves for Linux
 2.4.
 
-%package devel
+%package -n %libname
+Summary: Library for %{name}
+Group: System/Libraries
+
+%description -n %libname
+Library for %{name}.
+
+
+%package -n %devellibname
 Summary: Development files for %{name}
 Group: Development/C
 
-%description devel
+%description -n %devellibname
 Development files for %{name}
 
 
@@ -78,12 +89,12 @@ Development files for %{name}
 %build
 %serverbuild
 rm -f Makefile{,.in}
+libtoolize -c
 aclocal --force
 automake -c -f
 autoconf
 %configure2_5x --enable-zlib
 %make  CFLAGS="%{optflags} -fPIC"
-ar r libmodprobe.{a,o} zlibsupport.o
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -99,7 +110,6 @@ for n in 5 8;do
 	done
 done
 mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
-install -m644 libmodprobe.a $RPM_BUILD_ROOT%_libdir
 install -m644 modprobe.h list.h $RPM_BUILD_ROOT%_includedir
 
 %ifarch %{ix86}
@@ -152,6 +162,9 @@ exit 0
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post   -n %libname -p /sbin/ldconfig
+%postun -n %libname -p /sbin/ldconfig
+
 %files
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog NEWS README 
@@ -167,8 +180,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 
 
-%files devel
+%files -n %devellibname
 %defattr(-,root,root)
-%{_libdir}/libmodprobe.a
 %_includedir/*.h
+%{_libdir}/libmodprobe.a
+%{_libdir}/libmodprobe.la
+%{_libdir}/libmodprobe.so
+
+
+%files -n %libname
+%defattr(-,root,root)
+%{_libdir}/libmodprobe.so.*
 
