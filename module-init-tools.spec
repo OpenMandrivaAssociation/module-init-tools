@@ -72,8 +72,8 @@ Library for %{name}.
 %package -n %devellibname
 Summary: Development files for %{name}
 Group: Development/C
-Provides: module-init-tools-devel = %version-%release
 Conflicts: module-init-tools-devel <= 3.3-pre11.14mdv
+Obsoletes: module-init-tools-devel
 
 %description -n %devellibname
 Development files for %{name}
