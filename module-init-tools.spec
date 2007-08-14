@@ -110,16 +110,7 @@ rm -rf $RPM_BUILD_ROOT
 
 pushd objs
 %makeinstall transform=
-
 mv $RPM_BUILD_ROOT/bin/lsmod $RPM_BUILD_ROOT/sbin
-
-rm -rf $RPM_BUILD_ROOT/%{_mandir}
-for n in 5 8;do
-	install -d $RPM_BUILD_ROOT/%{_mandir}/man$n/
-	for i in *.$n;do
-		install -m644 $i $RPM_BUILD_ROOT/%{_mandir}/man${n}/$i
-	done
-done
 popd
 
 mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
