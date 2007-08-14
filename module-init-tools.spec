@@ -108,7 +108,7 @@ autoconf
 mkdir -p objs-diet
 pushd objs-diet
 CONFIGURE_TOP=.. %configure2_5x --enable-zlib --disable-shared
-%make CFLAGS="-O2" CC="diet gcc"
+%make CFLAGS="-Os" CC="diet gcc"
 popd
 %endif
 
