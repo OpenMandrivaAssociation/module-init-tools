@@ -26,6 +26,8 @@
 # they are wiped out by postun script of older version
 %define toalternate insmod lsmod modprobe rmmod depmod modinfo
 
+%define build_diet 1
+
 Summary: Tools for managing Linux kernel modules
 Name: %{name}
 Version: %{version}
@@ -54,6 +56,9 @@ BuildRequires: autoconf2.5
 BuildRequires: glibc-static-devel
 BuildRequires: libz-devel
 BuildRequires: docbook-utils docbook-dtd41-sgml
+%if %{build_diet}
+BuildRequires:	dietlibc-devel
+%endif
 
 %description
 This package contains a set of programs for loading, inserting, and
@@ -99,6 +104,14 @@ aclocal --force
 automake -c -f
 autoconf
 
+%if %{build_diet}
+mkdir -p objs-diet
+pushd objs-diet
+CONFIGURE_TOP=.. %configure2_5x --enable-zlib --disable-shared
+%make CFLAGS="-O2" CC="diet gcc"
+popd
+%endif
+
 mkdir -p objs
 pushd objs
 CONFIGURE_TOP=.. %configure2_5x --enable-zlib
@@ -112,6 +125,11 @@ pushd objs
 %makeinstall transform=
 mv $RPM_BUILD_ROOT/bin/lsmod $RPM_BUILD_ROOT/sbin
 popd
+
+%if %{build_diet}
+install -d $RPM_BUILD_ROOT%{_prefix}/lib/dietlibc/lib-%{_arch}
+install objs-diet/.libs/libmodprobe.a $RPM_BUILD_ROOT%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
+%endif
 
 mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
 install -m644 modprobe.h list.h $RPM_BUILD_ROOT%_includedir
@@ -188,6 +206,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %_includedir/*.h
 %{_libdir}/libmodprobe.a
+%if %{build_diet}
+%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
+%endif
 %{_libdir}/libmodprobe.la
 %{_libdir}/libmodprobe.so
 
