@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 20
+%define mdkrelease %mkrel 21
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -74,6 +74,7 @@ Summary: Development files for %{name}
 Group: Development/C
 Conflicts: module-init-tools-devel <= 3.3-pre11.14mdv
 Obsoletes: module-init-tools-devel
+Provides: modprobe-devel
 
 %description -n %devellibname
 Development files for %{name}
