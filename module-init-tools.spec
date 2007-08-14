@@ -98,11 +98,17 @@ libtoolize -c
 aclocal --force
 automake -c -f
 autoconf
-%configure2_5x --enable-zlib
+
+mkdir -p objs
+pushd objs
+CONFIGURE_TOP=.. %configure2_5x --enable-zlib
 %make  CFLAGS="%{optflags} -fPIC"
+popd
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+pushd objs
 %makeinstall transform=
 
 mv $RPM_BUILD_ROOT/bin/lsmod $RPM_BUILD_ROOT/sbin
@@ -114,6 +120,8 @@ for n in 5 8;do
 		install -m644 $i $RPM_BUILD_ROOT/%{_mandir}/man${n}/$i
 	done
 done
+popd
+
 mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
 install -m644 modprobe.h list.h $RPM_BUILD_ROOT%_includedir
 
