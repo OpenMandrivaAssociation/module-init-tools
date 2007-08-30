@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 23
+%define mdkrelease %mkrel 24
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -52,6 +52,7 @@ Group: System/Kernel and hardware
 BuildRoot: %{_tmppath}/%{name}-buildroot
 Url: %{url}
 Conflicts: modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
+Obsoletes: modutils
 BuildRequires: autoconf2.5
 BuildRequires: glibc-static-devel
 BuildRequires: libz-devel
