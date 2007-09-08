@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 24
+%define mdkrelease %mkrel 25
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -47,6 +47,7 @@ Patch8:  module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
 Patch9:  module-init-tools-3.0-failed.unknown.symbol.patch
 Patch10: module-init-tools-3.3-pre11-insmod-strrchr.patch
 Patch11: module-init-tools-libify-2.patch
+Patch12: module-init-tools-3.3-pre11-preferred.patch
 License: GPL
 Group: System/Kernel and hardware
 BuildRoot: %{_tmppath}/%{name}-buildroot
@@ -96,6 +97,7 @@ Development files for %{name}
 %patch9 -p1 -b .failed-symb
 %patch10 -p1 -b .fix_insmod_strrchr
 %patch11 -p1 -b .liberror
+%patch12 -p1 -b .preferred
 
 %build
 %serverbuild
