@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 29
+%define mdkrelease %mkrel 30
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -37,6 +37,7 @@ Source1: blacklist-mdv
 Source3: modprobe.default
 Source4: modprobe.compat
 Source5: modprobe.preload
+Source6: ipw-no-associate.conf
 # from Fedora package
 Source20: blacklist-compat
 Patch1:  module-init-tools-libify.patch
@@ -147,7 +148,7 @@ install -d -m755 $RPM_BUILD_ROOT/etc/
 touch $RPM_BUILD_ROOT/etc/modprobe.conf
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc
 install -d -m755 $RPM_BUILD_ROOT/etc/modprobe.d/
-install -m 644 %{SOURCE1} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
+install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
 
 install -d -m755 $RPM_BUILD_ROOT/lib/module-init-tools
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/module-init-tools
