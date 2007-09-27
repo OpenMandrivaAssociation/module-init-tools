@@ -38,7 +38,7 @@ Source3: modprobe.default
 Source4: modprobe.compat
 Source5: modprobe.preload
 # from Fedora package
-Source6: blacklist-compat
+Source20: blacklist-compat
 Patch1:  module-init-tools-libify.patch
 Patch2:  module-init-tools-3.2-pre8-dont-break-depend.patch
 Patch3:  module-init-tools-3.2-pre8-all-defaults.patch
@@ -147,7 +147,7 @@ install -d -m755 $RPM_BUILD_ROOT/etc/
 touch $RPM_BUILD_ROOT/etc/modprobe.conf
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc
 install -d -m755 $RPM_BUILD_ROOT/etc/modprobe.d/
-install -m 644 %{SOURCE1} %{SOURCE6} $RPM_BUILD_ROOT/etc/modprobe.d
+install -m 644 %{SOURCE1} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
 
 install -d -m755 $RPM_BUILD_ROOT/lib/module-init-tools
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/module-init-tools
