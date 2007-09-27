@@ -198,7 +198,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/modprobe.conf
 %config(noreplace) /etc/modprobe.preload
 %dir /etc/modprobe.d/
-/etc/modprobe.d/*
+%config(noreplace) /etc/modprobe.d/*
 %dir /lib/module-init-tools
 /lib/module-init-tools/*
 /sbin/generate-modprobe.conf
