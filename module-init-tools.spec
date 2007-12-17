@@ -51,7 +51,6 @@ Patch11: module-init-tools-libify-2.patch
 Patch12: module-init-tools-3.3-pre11-preferred.patch
 License: GPL
 Group: System/Kernel and hardware
-BuildRoot: %{_tmppath}/%{name}-buildroot
 Url: %{url}
 Conflicts: modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
 Obsoletes: modutils
