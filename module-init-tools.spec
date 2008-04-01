@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 35
+%define mdkrelease %mkrel 36
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -146,6 +146,7 @@ pushd $RPM_BUILD_ROOT/sbin && {
 %endif
 
 install -d -m755 $RPM_BUILD_ROOT/etc/
+install -d -m755 $RPM_BUILD_ROOT/etc/depmod.d/
 touch $RPM_BUILD_ROOT/etc/modprobe.conf
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc
 install -d -m755 $RPM_BUILD_ROOT/etc/modprobe.d/
@@ -196,6 +197,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog NEWS README 
 %doc TODO stress_modules.sh
+%dir /etc/depmod.d/
 %config(noreplace) /etc/modprobe.conf
 %config(noreplace) /etc/modprobe.preload
 %dir /etc/modprobe.d/
