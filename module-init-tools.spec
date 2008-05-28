@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 36
+%define mdkrelease %mkrel 37
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
