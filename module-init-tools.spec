@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 37
+%define mdkrelease %mkrel 38
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -52,7 +52,7 @@ Patch11: module-init-tools-libify-2.patch
 Patch12: module-init-tools-3.3-pre11-preferred.patch
 License: GPL
 Group: System/Kernel and hardware
-BuildRoot: %{_tmppath}/%{name}-buildroot
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Url: %{url}
 Conflicts: modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
 Obsoletes: modutils
