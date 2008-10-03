@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 39
+%define mdkrelease %mkrel 40
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -50,6 +50,7 @@ Patch9:  module-init-tools-3.0-failed.unknown.symbol.patch
 Patch10: module-init-tools-3.3-pre11-insmod-strrchr.patch
 Patch11: module-init-tools-libify-2.patch
 Patch12: module-init-tools-3.3-pre11-preferred.patch
+Patch13: module-init-tools-3.3-pre11-cache.patch
 License: GPL
 Group: System/Kernel and hardware
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -100,6 +101,7 @@ Development files for %{name}
 %patch10 -p1 -b .fix_insmod_strrchr
 %patch11 -p1 -b .liberror
 %patch12 -p1 -b .preferred
+%patch13 -p1 -b .cache
 
 %build
 %serverbuild
@@ -113,14 +115,14 @@ autoconf
 mkdir -p objs-diet
 pushd objs-diet
 CONFIGURE_TOP=.. %configure2_5x --enable-zlib --disable-shared
-%make CFLAGS="-Os" CC="diet gcc"
+make CFLAGS="-Os" CC="diet gcc"
 popd
 %endif
 
 mkdir -p objs
 pushd objs
 CONFIGURE_TOP=.. %configure2_5x --enable-zlib
-%make  CFLAGS="%{optflags} -fPIC"
+make  CFLAGS="%{optflags} -fPIC"
 popd
 
 %install
