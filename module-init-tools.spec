@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.3
 %define priority 20
-%define mdkrelease %mkrel 40
+%define mdkrelease %mkrel 41
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -101,7 +101,10 @@ Development files for %{name}
 %patch10 -p1 -b .fix_insmod_strrchr
 %patch11 -p1 -b .liberror
 %patch12 -p1 -b .preferred
-%patch13 -p1 -b .cache
+
+# cache patch is currently causing depmod to fail (abort) with latest kernels
+# (2.6.28 based), temporarily disable until more investigation is done
+#patch13 -p1 -b .cache
 
 %build
 %serverbuild
