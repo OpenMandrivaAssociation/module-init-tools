@@ -47,7 +47,7 @@ Patch7:  module-init-tools-3.2-pre8-modprobe-default.patch
 Patch8:  module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
 Patch9:  module-init-tools-3.0-failed.unknown.symbol.patch
 Patch11: module-init-tools-libify-2.patch
-Patch12: module-init-tools-3.3-pre11-preferred.patch
+Patch12: module-init-tools-3.5-preferred.patch
 License: GPL
 Group: System/Kernel and hardware
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -95,9 +95,7 @@ Development files for %{name}
 %patch8 -p1 -b .generate-modprobe.conf-no-defaults
 %patch9 -p1 -b .failed-symb
 #%patch11 -p1 -b .liberror
-
-# The binary indexes patch broken this one
-#%patch12 -p1 -b .preferred
+%patch12 -p1 -b .preferred
 
 %build
 %serverbuild
