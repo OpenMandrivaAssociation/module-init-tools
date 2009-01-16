@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.5
 %define priority 20
-%define mdkrelease %mkrel 1
+%define mdkrelease %mkrel 2
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -48,7 +48,7 @@ Patch8:  module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
 Patch9:  module-init-tools-3.0-failed.unknown.symbol.patch
 Patch11: module-init-tools-libify-2.patch
 Patch12: module-init-tools-3.5-preferred.patch
-Patch13: depmod-fix-file-truncation.patch
+Patch13: module-init-tools-3.5-depmod-fix-file-truncation.patch
 License: GPL
 Group: System/Kernel and hardware
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
