@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.5
 %define priority 20
-%define mdkrelease %mkrel 2
+%define mdkrelease %mkrel 3
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -38,7 +38,6 @@ Source3: modprobe.default
 Source4: modprobe.compat
 Source5: modprobe.preload
 Source6: ipw-no-associate.conf
-Source7: mac80211-extra-channels.conf
 # from Fedora package
 Source20: blacklist-compat
 Patch1:  module-init-tools-3.5-libify.patch
@@ -151,7 +150,7 @@ install -d -m755 $RPM_BUILD_ROOT/etc/depmod.d/
 touch $RPM_BUILD_ROOT/etc/modprobe.conf
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc
 install -d -m755 $RPM_BUILD_ROOT/etc/modprobe.d/
-install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE7} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
+install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
 
 install -d -m755 $RPM_BUILD_ROOT/lib/module-init-tools
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/module-init-tools
