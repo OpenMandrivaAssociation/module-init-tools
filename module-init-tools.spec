@@ -1,8 +1,8 @@
 #TODO Take care of the conversion
 %define name module-init-tools
-%define version 3.5
+%define version 3.6
 %define priority 20
-%define mdkrelease %mkrel 3
+%define mdkrelease %mkrel 1
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -40,14 +40,12 @@ Source5: modprobe.preload
 Source6: ipw-no-associate.conf
 # from Fedora package
 Source20: blacklist-compat
-Patch1:  module-init-tools-3.5-libify.patch
-Patch2:  module-init-tools-3.2-pre8-dont-break-depend.patch
-Patch7:  module-init-tools-3.2-pre8-modprobe-default.patch
-Patch8:  module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
-Patch9:  module-init-tools-3.0-failed.unknown.symbol.patch
-Patch11: module-init-tools-libify-2.patch
-Patch12: module-init-tools-3.5-preferred.patch
-Patch13: module-init-tools-3.5-depmod-fix-file-truncation.patch
+Patch1: module-init-tools-3.6-libify.patch
+Patch2: module-init-tools-3.2-pre8-dont-break-depend.patch
+Patch3: module-init-tools-3.2-pre8-modprobe-default.patch
+Patch4: module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
+Patch5: module-init-tools-3.0-failed.unknown.symbol.patch
+Patch6: module-init-tools-3.5-preferred.patch
 License: GPL
 Group: System/Kernel and hardware
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -91,12 +89,10 @@ Development files for %{name}
 %setup -q -n %{tarname}
 %patch1 -p1 -b .lib
 %patch2 -p1 -b .dont-break-depend
-%patch7 -p1 -b .modprobe-default
-%patch8 -p1 -b .generate-modprobe.conf-no-defaults
-%patch9 -p1 -b .failed-symb
-#%patch11 -p1 -b .liberror
-%patch12 -p1 -b .preferred
-%patch13 -p1 -b .depmod-trunc
+%patch3 -p1 -b .modprobe-default
+%patch4 -p1 -b .generate-modprobe.conf-no-defaults
+%patch5 -p1 -b .failed-symb
+%patch6 -p1 -b .preferred
 
 %build
 %serverbuild
