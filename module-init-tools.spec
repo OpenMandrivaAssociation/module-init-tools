@@ -6,8 +6,8 @@
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
-%define _libdir /lib
-%define _libexecdir /lib
+%define _libdir /%_lib
+%define _libexecdir /%_lib
 %define major 0
 %define libname %mklibname modprobe %major
 %define devellibname %mklibname -d modprobe %major
@@ -128,8 +128,8 @@ mv $RPM_BUILD_ROOT/bin/lsmod $RPM_BUILD_ROOT/sbin
 popd
 
 %if %{build_diet}
-install -d $RPM_BUILD_ROOT%{_prefix}/lib/dietlibc/lib-%{_arch}
-install objs-diet/.libs/libmodprobe.a $RPM_BUILD_ROOT%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
+install -d $RPM_BUILD_ROOT%{_prefix}/%{_libdir}/dietlibc/lib-%{_arch}
+install objs-diet/.libs/libmodprobe.a $RPM_BUILD_ROOT%{_prefix}/%{_libdir}/dietlibc/lib-%{_arch}/libmodprobe.a
 %endif
 
 mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
@@ -148,9 +148,9 @@ install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc
 install -d -m755 $RPM_BUILD_ROOT/etc/modprobe.d/
 install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
 
-install -d -m755 $RPM_BUILD_ROOT/lib/module-init-tools
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/lib/module-init-tools
-install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/lib/module-init-tools
+install -d -m755 $RPM_BUILD_ROOT/%{_libdir}/module-init-tools
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_libdir}/module-init-tools
+install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/%{_libdir}/module-init-tools
 
 # We have to remove alternatives before postun for old version runs,
 # otherwise either dummy entries remain without any possibility to clean up
@@ -202,8 +202,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/modprobe.preload
 %dir /etc/modprobe.d/
 %config(noreplace) /etc/modprobe.d/*
-%dir /lib/module-init-tools
-/lib/module-init-tools/*
+%dir %{_libdir}/module-init-tools
+%{_libdir}/module-init-tools/*
 /sbin/generate-modprobe.conf
 /sbin/*
 %{_mandir}/*/*
@@ -214,7 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 %_includedir/*.h
 %{_libdir}/libmodprobe.a
 %if %{build_diet}
-%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
+%{_prefix}/%{_libdir}/dietlibc/lib-%{_arch}/libmodprobe.a
 %endif
 %{_libdir}/libmodprobe.la
 %{_libdir}/libmodprobe.so
