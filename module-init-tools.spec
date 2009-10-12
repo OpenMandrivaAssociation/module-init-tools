@@ -128,8 +128,8 @@ mv $RPM_BUILD_ROOT/bin/lsmod $RPM_BUILD_ROOT/sbin
 popd
 
 %if %{build_diet}
-install -d $RPM_BUILD_ROOT%{_prefix}/%{_libdir}/dietlibc/lib-%{_arch}
-install objs-diet/.libs/libmodprobe.a $RPM_BUILD_ROOT%{_prefix}/%{_libdir}/dietlibc/lib-%{_arch}/libmodprobe.a
+install -d $RPM_BUILD_ROOT%{_prefix}/lib/dietlibc/lib-%{_arch}
+install objs-diet/.libs/libmodprobe.a $RPM_BUILD_ROOT%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
 %endif
 
 mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
@@ -214,7 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 %_includedir/*.h
 %{_libdir}/libmodprobe.a
 %if %{build_diet}
-%{_prefix}/%{_libdir}/dietlibc/lib-%{_arch}/libmodprobe.a
+%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
 %endif
 %{_libdir}/libmodprobe.la
 %{_libdir}/libmodprobe.so
