@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.6
 %define priority 20
-%define mdkrelease %mkrel 5
+%define mdkrelease %mkrel 6
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -53,6 +53,7 @@ Url: %{url}
 Conflicts: modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
 Obsoletes: modutils
 Requires: %libname = %{version}-%{release}
+Conflicts: %libname < 3.6
 BuildRequires: autoconf2.5
 BuildRequires: glibc-static-devel
 BuildRequires: libz-devel
