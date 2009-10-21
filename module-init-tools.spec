@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.6
 %define priority 20
-%define mdkrelease %mkrel 6
+%define mdkrelease %mkrel 7
 %define url http://www.kerneltools.org/pub/downloads/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -165,6 +165,17 @@ for i in %{toalternate}; do
 	update-alternatives --remove man-$i %{_mandir}/man8/$i-24.8%{_extension}
 done
 exit 0
+
+# libmodprobe.so.0 used to be in /lib for x86_64 before 3.6 which now ships them in /lib64
+# and the ABI has been modified without bumping the major at the same time.
+# The old files in /lib will be removed very late in the transaction, which will make scriptlets
+# depending on libmodprobe fail (like depmod), because depmod will prefer the library from /lib
+# with the old incompatible ABI.
+# A workaround is to remove the old files from /lib earlier
+%ifarch x86_64
+%triggerin -- lib64modprobe0 >= 3.6
+rm -f /lib/libmodprobe.so.0*
+%endif
 
 %post
 if [ ! -s /etc/modprobe.conf ]; then
