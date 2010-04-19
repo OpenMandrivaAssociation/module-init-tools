@@ -1,9 +1,8 @@
 #TODO Take care of the conversion
 %define name module-init-tools
-### THIS IS WIP... DO NOT SUBMIT !!!
-#define version 3.11.1
+%define version 3.6
 %define priority 20
-#define mdkrelease %mkrel 1
+%define mdkrelease %mkrel 8
 %define url http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
