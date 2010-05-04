@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.6
 %define priority 20
-%define mdkrelease %mkrel 8
+%define mdkrelease %mkrel 9
 %define url http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
