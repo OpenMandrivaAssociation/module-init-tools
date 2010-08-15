@@ -47,6 +47,9 @@ Patch4: module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
 Patch5: module-init-tools-3.0-failed.unknown.symbol.patch
 Patch6: module-init-tools-3.5-preferred.patch
 # (Anssi) blacklist should only affect internal aliases as per documentation:
+# update: upstream thinks it is the documentation that is wrong;
+# this patch can be removed once "[RFC] How to handle loading KMS drivers early"
+# in cooker@ is implemented.
 Patch7: module-init-tools-3.6-blacklist-internal-aliases-only.patch
 License: GPL
 Group: System/Kernel and hardware
