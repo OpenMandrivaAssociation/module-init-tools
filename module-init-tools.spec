@@ -2,7 +2,7 @@
 %define name module-init-tools
 %define version 3.6
 %define priority 20
-%define mdkrelease %mkrel 13
+%define mdkrelease %mkrel 14
 %define url http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
@@ -34,7 +34,6 @@ Version: %{version}
 Release: %{release}
 Source0: %{url}/%{tarname}.tar.bz2
 Source1: blacklist-mdv
-Source2: blacklist-firewire
 Source3: modprobe.default
 Source4: modprobe.compat
 Source5: modprobe.preload
@@ -155,7 +154,7 @@ install -d -m755 $RPM_BUILD_ROOT/etc/depmod.d/
 touch $RPM_BUILD_ROOT/etc/modprobe.conf
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc
 install -d -m755 $RPM_BUILD_ROOT/etc/modprobe.d/
-install -m 644 %{SOURCE1} %{SOURCE2} %{SOURCE6} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
+install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
 
 install -d -m755 $RPM_BUILD_ROOT/%{_libdir}/module-init-tools
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_libdir}/module-init-tools
