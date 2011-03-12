@@ -5,7 +5,7 @@
 %define _libexecdir /%_lib
 %define major 0
 %define libname %mklibname modprobe %major
-%define devellibname %mklibname -d modprobe %major
+%define devellibname %mklibname -d modprobe
 
 # We must remove alternatives before new files are installed; otherwise
 # they are wiped out by postun script of older version
@@ -71,11 +71,12 @@ Summary: Development files for %{name}
 Group: Development/C
 Conflicts: module-init-tools-devel <= 3.3-pre11.14mdv
 Obsoletes: module-init-tools-devel
-Provides: modprobe-devel
+Provides: modprobe-devel = %version-%release
+Requires: %libname = %version
+Obsoletes: %{_lib}modprobe0-devel < %version-%release
 
 %description -n %devellibname
 Development files for %{name}
-
 
 %prep
 %setup -q -n %name-%version
