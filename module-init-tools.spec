@@ -1,9 +1,4 @@
 #TODO Take care of the conversion
-%define name module-init-tools
-%define version 3.6
-%define priority 20
-%define mdkrelease %mkrel 14
-%define url http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 %define _bindir /bin
 %define _sbindir /sbin
 %define _libdir /%_lib
@@ -12,16 +7,6 @@
 %define libname %mklibname modprobe %major
 %define devellibname %mklibname -d modprobe %major
 
-%define pre 0
-
-%if %pre
-%define release pre%{pre}.%mdkrelease
-%define tarname %name-%version-pre%{pre}
-%else
-%define release %mdkrelease
-%define tarname %name-%version
-%endif
-
 # We must remove alternatives before new files are installed; otherwise
 # they are wiped out by postun script of older version
 %define toalternate insmod lsmod modprobe rmmod depmod modinfo
@@ -29,10 +14,10 @@
 %define build_diet 1
 
 Summary: Tools for managing Linux kernel modules
-Name: %{name}
-Version: %{version}
-Release: %{release}
-Source0: %{url}/%{tarname}.tar.bz2
+Name: module-init-tools
+Version: 3.6
+Release: %mkrel 15
+Source0: http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/%name-%version.tar.bz2
 Source1: blacklist-mdv
 Source3: modprobe.default
 Source4: modprobe.compat
@@ -93,7 +78,7 @@ Development files for %{name}
 
 
 %prep
-%setup -q -n %{tarname}
+%setup -q -n %name-%version
 %patch1 -p1 -b .lib
 %patch2 -p1 -b .dont-break-depend
 %patch3 -p1 -b .modprobe-default
