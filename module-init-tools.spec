@@ -16,7 +16,7 @@
 Summary: Tools for managing Linux kernel modules
 Name: module-init-tools
 Version: 3.6
-Release: %mkrel 15
+Release: %mkrel 16
 Source0: http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/%name-%version.tar.bz2
 Source1: blacklist-mdv
 Source3: modprobe.default
@@ -31,11 +31,6 @@ Patch3: module-init-tools-3.2-pre8-modprobe-default.patch
 Patch4: module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
 Patch5: module-init-tools-3.0-failed.unknown.symbol.patch
 Patch6: module-init-tools-3.5-preferred.patch
-# (Anssi) blacklist should only affect internal aliases as per documentation:
-# update: upstream thinks it is the documentation that is wrong;
-# this patch can be removed once "[RFC] How to handle loading KMS drivers early"
-# in cooker@ is implemented.
-Patch7: module-init-tools-3.6-blacklist-internal-aliases-only.patch
 License: GPL
 Group: System/Kernel and hardware
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -86,7 +81,6 @@ Development files for %{name}
 %patch4 -p1 -b .generate-modprobe.conf-no-defaults
 %patch5 -p1 -b .failed-symb
 %patch6 -p1 -b .preferred
-%patch7 -p1 -b .blacklist-internal-aliases
 
 %build
 %serverbuild
