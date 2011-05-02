@@ -16,7 +16,7 @@
 Summary: Tools for managing Linux kernel modules
 Name: module-init-tools
 Version: 3.6
-Release: 17
+Release: 18
 Source0: http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/%name-%version.tar.bz2
 Source1: blacklist-mdv
 Source3: modprobe.default
