@@ -108,37 +108,37 @@ make  CFLAGS="%{optflags} -fPIC"
 popd
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 pushd objs
 %makeinstall transform=
-mv $RPM_BUILD_ROOT/bin/lsmod $RPM_BUILD_ROOT/sbin
+mv %{buildroot}/bin/lsmod %{buildroot}/sbin
 popd
 
 %if %{build_diet}
-install -d $RPM_BUILD_ROOT%{_prefix}/lib/dietlibc/lib-%{_arch}
-install objs-diet/.libs/libmodprobe.a $RPM_BUILD_ROOT%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
+install -d %{buildroot}%{_prefix}/lib/dietlibc/lib-%{_arch}
+install objs-diet/.libs/libmodprobe.a %{buildroot}%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
 %endif
 
-mkdir -p $RPM_BUILD_ROOT{%_libdir,%_includedir}
-install -m644 modprobe.h list.h $RPM_BUILD_ROOT%_includedir
+mkdir -p %{buildroot}{%_libdir,%_includedir}
+install -m644 modprobe.h list.h %{buildroot}%_includedir
 
 %ifarch %{ix86}
-pushd $RPM_BUILD_ROOT/sbin && {
+pushd %{buildroot}/sbin && {
 	rm -f insmod.static
 } && popd
 %endif
 
-install -d -m755 $RPM_BUILD_ROOT/etc/
-install -d -m755 $RPM_BUILD_ROOT/etc/depmod.d/
-touch $RPM_BUILD_ROOT/etc/modprobe.conf
-install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/etc
-install -d -m755 $RPM_BUILD_ROOT/etc/modprobe.d/
-install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE20} $RPM_BUILD_ROOT/etc/modprobe.d
+install -d -m755 %{buildroot}/etc/
+install -d -m755 %{buildroot}/etc/depmod.d/
+touch %{buildroot}/etc/modprobe.conf
+install -m 644 %{SOURCE5} %{buildroot}/etc
+install -d -m755 %{buildroot}/etc/modprobe.d/
+install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE20} %{buildroot}/etc/modprobe.d
 
-install -d -m755 $RPM_BUILD_ROOT/%{_libdir}/module-init-tools
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/%{_libdir}/module-init-tools
-install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/%{_libdir}/module-init-tools
+install -d -m755 %{buildroot}/%{_libdir}/module-init-tools
+install -m 644 %{SOURCE3} %{buildroot}/%{_libdir}/module-init-tools
+install -m 644 %{SOURCE4} %{buildroot}/%{_libdir}/module-init-tools
 
 # We have to remove alternatives before postun for old version runs,
 # otherwise either dummy entries remain without any possibility to clean up
@@ -183,7 +183,7 @@ fi
 exit 0
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %if %mdkversion < 200900
 %post   -n %libname -p /sbin/ldconfig
