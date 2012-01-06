@@ -70,8 +70,7 @@ Library for %{name}.
 %package -n	%{devellibname}
 Summary:	Development files for %{name}
 Group:		Development/C
-Conflicts:	module-init-tools-devel <= 3.3-pre11.14mdv
-Obsoletes:	module-init-tools-devel
+%rename		module-init-tools-devel
 Provides:	modprobe-devel = %{version}-%{release}
 Requires:	%{libname} = %{version}
 Obsoletes:	%{_lib}modprobe0-devel < %{version}-%{release}
