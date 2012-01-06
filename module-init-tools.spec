@@ -41,7 +41,7 @@ Patch9:		module-init-tools-3.16-libify-4.patch
 # quiet API:
 Patch10:	module-init-tools-3.16-libify-7.patch
 Patch20:	module-init-tools-3.16-xz-support.patch
-License:	GPL
+License:	GPLv2+
 Group:		System/Kernel and hardware
 Url:		http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 BuildRequires:	autoconf2.5
