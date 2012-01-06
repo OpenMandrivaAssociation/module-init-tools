@@ -2,7 +2,7 @@
 %define libname %mklibname modprobe %{major}
 %define devellibname %mklibname -d modprobe
 
-%define build_diet 1
+%bcond_without	diet
 
 Summary:	Tools for managing Linux kernel modules
 Name:		module-init-tools
@@ -53,7 +53,7 @@ BuildRequires:	glibc-static-devel
 BuildRequires:	libz-devel
 BuildRequires:	liblzma-devel
 BuildRequires:	docbook-utils docbook-dtd41-sgml
-%if %{build_diet}
+%if %{with diet}
 BuildRequires:	dietlibc-devel
 %endif
 
@@ -104,7 +104,7 @@ rm -f config.status
 %build
 %serverbuild
 
-%if %{build_diet}
+%if %{with diet}
 mkdir -p objs-diet
 pushd objs-diet
 CONFIGURE_TOP=.. \
@@ -141,7 +141,7 @@ pushd objs
 mv %{buildroot}/bin/lsmod %{buildroot}/sbin
 popd
 
-%if %{build_diet}
+%if %{with diet}
 install objs-diet/.libs/libmodprobe.a -D %{buildroot}%{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
 install objs-diet/insmod.static -D %{buildroot}/sbin/insmod.static
 install objs-diet/modprobe -D %{buildroot}/sbin/modprobe-static
@@ -210,7 +210,7 @@ exit 0
 %files -n %devellibname
 %{_includedir}/*.h
 /%{_lib}/libmodprobe.a
-%if %{build_diet}
+%if %{with diet}
 %{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
 %endif
 /%{_lib}/libmodprobe.la
