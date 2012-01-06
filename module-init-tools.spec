@@ -184,7 +184,7 @@ fi
 exit 0
 
 %files
-%doc AUTHORS COPYING ChangeLog NEWS README 
+%doc AUTHORS ChangeLog NEWS README 
 %doc TODO stress_modules.sh
 %dir %{_sysconfdir}/depmod.d/
 %config(noreplace) %{_sysconfdir}/modprobe.conf
