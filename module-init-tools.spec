@@ -137,18 +137,6 @@ install -d -m755 %{buildroot}%{_libdir}/module-init-tools
 install -m 644 %{SOURCE3} %{buildroot}%{_libdir}/module-init-tools
 install -m 644 %{SOURCE4} %{buildroot}%{_libdir}/module-init-tools
 
-# We have to remove alternatives before postun for old version runs,
-# otherwise either dummy entries remain without any possibility to clean up
-# or newly installed binaries are silentlty removed
-%triggerprein -- module-init-tools < 3.3-pre11.10mdv2008.0
-for i in %{toalternate}; do
-	update-alternatives --remove $i /sbin/$i-25
-	update-alternatives --remove $i /sbin/$i-24
-	update-alternatives --remove man-$i %{_mandir}/man8/$i-25.8%{_extension}
-	update-alternatives --remove man-$i %{_mandir}/man8/$i-24.8%{_extension}
-done
-exit 0
-
 # libmodprobe.so.0 used to be in /lib for x86_64 before 3.6 which now ships them in /lib64
 # and the ABI has been modified without bumping the major at the same time.
 # The old files in /lib will be removed very late in the transaction, which will make scriptlets
