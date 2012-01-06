@@ -66,7 +66,6 @@ Group:		System/Libraries
 %description -n	%{libname}
 Library for %{name}.
 
-
 %package -n	%{devname}
 Summary:	Development files for %{name}
 Group:		Development/C
