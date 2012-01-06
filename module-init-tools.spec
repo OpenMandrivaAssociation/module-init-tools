@@ -73,7 +73,6 @@ Group:		Development/C
 %rename		module-init-tools-devel
 Provides:	modprobe-devel = %{version}-%{release}
 Requires:	%{libname} = %{version}
-Obsoletes:	%{_lib}modprobe0-devel < %{version}-%{release}
 
 %description -n %{devellibname}
 Development files for %{name}
