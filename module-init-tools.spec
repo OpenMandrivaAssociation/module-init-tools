@@ -71,7 +71,6 @@ Library for %{name}.
 Summary:	Development files for %{name}
 Group:		Development/C
 %rename		module-init-tools-devel
-Provides:	modprobe-devel = %{version}-%{release}
 Requires:	%{libname} = %{version}
 
 %description -n %{devellibname}
