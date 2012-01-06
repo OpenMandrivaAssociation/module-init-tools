@@ -143,12 +143,6 @@ install objs-diet/modprobe -D %{buildroot}/sbin/modprobe-static
 mkdir -p %{buildroot}{%{_libdir},%{_includedir}}
 install -m644 modprobe.h list.h %{buildroot}%{_includedir}
 
-%ifarch %{ix86}
-pushd %{buildroot}/sbin && {
-	rm -f insmod.static
-} && popd
-%endif
-
 install -d -m755 %{buildroot}%{_sysconfdir}
 install -d -m755 %{buildroot}%{_sysconfdir}/depmod.d/
 touch %{buildroot}%{_sysconfdir}/modprobe.conf
