@@ -1,6 +1,6 @@
-%define major 1
-%define libname %mklibname modprobe %{major}
-%define devellibname %mklibname -d modprobe
+%define	major	1
+%define	libname	%mklibname modprobe %{major}
+%define	devname	%mklibname -d modprobe
 
 %bcond_without	diet
 
@@ -67,13 +67,14 @@ Group:		System/Libraries
 Library for %{name}.
 
 
-%package -n	%{devellibname}
+%package -n	%{devname}
 Summary:	Development files for %{name}
 Group:		Development/C
 %rename		module-init-tools-devel
+Provides:	modprobe-devel = %{EVRD}
 Requires:	%{libname} = %{version}
 
-%description -n %{devellibname}
+%description -n %{devname}
 Development files for %{name}
 
 %prep
@@ -194,7 +195,7 @@ exit 0
 /sbin/*
 %{_mandir}/*/*
 
-%files -n %devellibname
+%files -n %{devname}
 %{_includedir}/*.h
 /%{_lib}/libmodprobe.a
 %if %{with diet}
@@ -203,5 +204,5 @@ exit 0
 /%{_lib}/libmodprobe.la
 /%{_lib}/libmodprobe.so
 
-%files -n %libname
+%files -n %{libname}
 /%{_lib}/libmodprobe.so.*
