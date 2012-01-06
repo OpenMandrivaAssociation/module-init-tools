@@ -35,7 +35,6 @@ Patch6: module-init-tools-3.5-preferred.patch
 Patch8: module-init-tools-3.6-xz-support.patch
 License: GPL
 Group: System/Kernel and hardware
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Url: %{url}
 Conflicts: modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
 Obsoletes: modutils
@@ -108,8 +107,6 @@ make  CFLAGS="%{optflags} -fPIC"
 popd
 
 %install
-rm -rf %{buildroot}
-
 pushd objs
 %makeinstall transform=
 mv %{buildroot}/bin/lsmod %{buildroot}/sbin
@@ -182,18 +179,7 @@ fi
 
 exit 0
 
-%clean
-rm -rf %{buildroot}
-
-%if %mdkversion < 200900
-%post   -n %libname -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%postun -n %libname -p /sbin/ldconfig
-%endif
-
 %files
-%defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog NEWS README 
 %doc TODO stress_modules.sh
 %dir /etc/depmod.d/
@@ -209,7 +195,6 @@ rm -rf %{buildroot}
 
 
 %files -n %devellibname
-%defattr(-,root,root)
 %_includedir/*.h
 %{_libdir}/libmodprobe.a
 %if %{build_diet}
@@ -220,6 +205,4 @@ rm -rf %{buildroot}
 
 
 %files -n %libname
-%defattr(-,root,root)
 %{_libdir}/libmodprobe.so.*
-
