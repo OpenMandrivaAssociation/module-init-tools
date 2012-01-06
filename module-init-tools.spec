@@ -44,7 +44,7 @@ Patch8:		module-init-tools-3.16-libify-2.patch
 Patch9:		module-init-tools-3.16-libify-4.patch
 # quiet API:
 Patch10:	module-init-tools-3.16-libify-7.patch
-Patch20:	module-init-tools-3.6-xz-support.patch
+Patch20:	module-init-tools-3.16-xz-support.patch
 License:	GPL
 Group:		System/Kernel and hardware
 Url:		http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
@@ -99,7 +99,7 @@ Development files for %{name}
 %patch8 -p1 -b .lib2
 %patch9 -p1 -b .lib4
 %patch10 -p1 -b .quiet_api
-#patch20 -p1 -b .xz~
+%patch20 -p1 -b .xz~
 
 autoreconf -fi
 # XXX: Remove config.status, otherwise configure will get confused
@@ -113,7 +113,7 @@ mkdir -p objs-diet
 pushd objs-diet
 CONFIGURE_TOP=.. \
 %configure2_5x	--enable-zlib \
-		--enable-xz \
+		--enable-liblzma \
 		--disable-shared \
 		--bindir=/bin \
 		--sbindir=/sbin \
@@ -130,7 +130,7 @@ mkdir -p objs
 pushd objs
 CONFIGURE_TOP=.. \
 %configure2_5x	--enable-zlib \
-		--enable-xz \
+		--enable-liblzma \
 		--bindir=/bin \
 		--sbindir=/sbin \
 		--libdir=/%{_lib} \
