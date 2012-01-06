@@ -13,38 +13,38 @@
 
 %define build_diet 1
 
-Summary: Tools for managing Linux kernel modules
-Name: module-init-tools
-Version: 3.6
-Release: 18
-Source0: http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/%name-%version.tar.bz2
-Source1: blacklist-mdv
-Source3: modprobe.default
-Source4: modprobe.compat
-Source5: modprobe.preload
-Source6: ipw-no-associate.conf
+Summary:	Tools for managing Linux kernel modules
+Name:		module-init-tools
+Version:	3.6
+Release:	18
+Source0:	http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/%name-%version.tar.bz2
+Source1:	blacklist-mdv
+Source3:	modprobe.default
+Source4:	modprobe.compat
+Source5:	modprobe.preload
+Source6:	ipw-no-associate.conf
 # from Fedora package
-Source20: blacklist-compat
-Patch1: module-init-tools-3.6-libify.patch
-Patch2: module-init-tools-3.2-pre8-dont-break-depend.patch
-Patch3: module-init-tools-3.2-pre8-modprobe-default.patch
-Patch4: module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
-Patch5: module-init-tools-3.0-failed.unknown.symbol.patch
-Patch6: module-init-tools-3.5-preferred.patch
+Source20:	blacklist-compat
+Patch1:		module-init-tools-3.6-libify.patch
+Patch2:		module-init-tools-3.2-pre8-dont-break-depend.patch
+Patch3:		module-init-tools-3.2-pre8-modprobe-default.patch
+Patch4:		module-init-tools-3.2.2-generate-modprobe.conf-no-defaults.patch
+Patch5:		module-init-tools-3.0-failed.unknown.symbol.patch
+Patch6:		module-init-tools-3.5-preferred.patch
 # (proyvind): add support for xz compressed modules
-Patch8: module-init-tools-3.6-xz-support.patch
-License: GPL
-Group: System/Kernel and hardware
-Url: %{url}
-Conflicts: modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
-Obsoletes: modutils
-Requires: %libname = %{version}-%{release}
-Conflicts: %libname < 3.6
-BuildRequires: autoconf2.5
-BuildRequires: glibc-static-devel
-BuildRequires: libz-devel
+Patch8:		module-init-tools-3.6-xz-support.patch
+License:	GPL
+Group:		System/Kernel and hardware
+Url:		%{url}
+Conflicts:	modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
+Obsoletes:	modutils
+Requires:	%{libname} = %{version}-%{release}
+Conflicts:	%{libname} < 3.6
+BuildRequires:	autoconf2.5
+BuildRequires:	glibc-static-devel
+BuildRequires:	libz-devel
 BuildRequires:	liblzma-devel
-BuildRequires: docbook-utils docbook-dtd41-sgml
+BuildRequires:	docbook-utils docbook-dtd41-sgml
 %if %{build_diet}
 BuildRequires:	dietlibc-devel
 %endif
@@ -55,28 +55,28 @@ removing kernel modules for Linux (versions 2.5.47 and above). It
 serves the same function that the "modutils" package serves for Linux
 2.4.
 
-%package -n %libname
-Summary: Library for %{name}
-Group: System/Libraries
+%package -n	%{libname}
+Summary:	Library for %{name}
+Group:		System/Libraries
 
-%description -n %libname
+%description -n	%{libname}
 Library for %{name}.
 
 
-%package -n %devellibname
-Summary: Development files for %{name}
-Group: Development/C
-Conflicts: module-init-tools-devel <= 3.3-pre11.14mdv
-Obsoletes: module-init-tools-devel
-Provides: modprobe-devel = %version-%release
-Requires: %libname = %version
-Obsoletes: %{_lib}modprobe0-devel < %version-%release
+%package -n	%{devellibname}
+Summary:	Development files for %{name}
+Group:		Development/C
+Conflicts:	module-init-tools-devel <= 3.3-pre11.14mdv
+Obsoletes:	module-init-tools-devel
+Provides:	modprobe-devel = %{version}-%{release}
+Requires:	%{libname} = %{version}
+Obsoletes:	%{_lib}modprobe0-devel < %{version}-%{release}
 
-%description -n %devellibname
+%description -n %{devellibname}
 Development files for %{name}
 
 %prep
-%setup -q -n %name-%version
+%setup -q
 %patch1 -p1 -b .lib
 %patch2 -p1 -b .dont-break-depend
 %patch3 -p1 -b .modprobe-default
@@ -126,16 +126,16 @@ pushd %{buildroot}/sbin && {
 } && popd
 %endif
 
-install -d -m755 %{buildroot}/etc/
-install -d -m755 %{buildroot}/etc/depmod.d/
-touch %{buildroot}/etc/modprobe.conf
-install -m 644 %{SOURCE5} %{buildroot}/etc
-install -d -m755 %{buildroot}/etc/modprobe.d/
-install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE20} %{buildroot}/etc/modprobe.d
+install -d -m755 %{buildroot}%{_sysconfdir}
+install -d -m755 %{buildroot}%{_sysconfdir}/depmod.d/
+touch %{buildroot}%{_sysconfdir}/modprobe.conf
+install -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}
+install -d -m755 %{buildroot}%{_sysconfdir}/modprobe.d/
+install -m 644 %{SOURCE1} %{SOURCE6} %{SOURCE20} %{buildroot}%{_sysconfdir}/modprobe.d
 
-install -d -m755 %{buildroot}/%{_libdir}/module-init-tools
-install -m 644 %{SOURCE3} %{buildroot}/%{_libdir}/module-init-tools
-install -m 644 %{SOURCE4} %{buildroot}/%{_libdir}/module-init-tools
+install -d -m755 %{buildroot}%{_libdir}/module-init-tools
+install -m 644 %{SOURCE3} %{buildroot}%{_libdir}/module-init-tools
+install -m 644 %{SOURCE4} %{buildroot}%{_libdir}/module-init-tools
 
 # We have to remove alternatives before postun for old version runs,
 # otherwise either dummy entries remain without any possibility to clean up
@@ -193,7 +193,6 @@ exit 0
 /sbin/*
 %{_mandir}/*/*
 
-
 %files -n %devellibname
 %_includedir/*.h
 %{_libdir}/libmodprobe.a
@@ -202,7 +201,6 @@ exit 0
 %endif
 %{_libdir}/libmodprobe.la
 %{_libdir}/libmodprobe.so
-
 
 %files -n %libname
 %{_libdir}/libmodprobe.so.*
