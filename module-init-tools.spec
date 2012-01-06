@@ -44,8 +44,6 @@ Patch20:	module-init-tools-3.16-xz-support.patch
 License:	GPL
 Group:		System/Kernel and hardware
 Url:		http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
-Conflicts:	modutils < 2.4.22-10mdk devfsd < 1.3.25-31mdk
-Obsoletes:	modutils
 Requires:	%{libname} = %{version}-%{release}
 Conflicts:	%{libname} < 3.6
 BuildRequires:	autoconf2.5
