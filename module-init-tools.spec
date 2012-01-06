@@ -2,10 +2,6 @@
 %define libname %mklibname modprobe %{major}
 %define devellibname %mklibname -d modprobe
 
-# We must remove alternatives before new files are installed; otherwise
-# they are wiped out by postun script of older version
-%define toalternate insmod lsmod modprobe rmmod depmod modinfo
-
 %define build_diet 1
 
 Summary:	Tools for managing Linux kernel modules
