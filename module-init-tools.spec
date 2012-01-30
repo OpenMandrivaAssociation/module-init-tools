@@ -7,7 +7,7 @@
 Summary:	Tools for managing Linux kernel modules
 Name:		module-init-tools
 Version:	3.16
-Release:	2
+Release:	3
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/%name-%version.tar.bz2
 Source1:	blacklist-mdv.conf
 Source3:	modprobe.default
@@ -162,7 +162,7 @@ install -m755 generate-modprobe.conf %{buildroot}/sbin/generate-modprobe.conf
 if [ -e /etc/modprobe.conf ]; then
 	if [ ! -s /etc/modprobe.conf ]; then
 		rm -f /etc/modprobe.conf
-	elif [ ! -e /etc/modprobe.d/modprobe.conf ]
+	elif [ ! -e /etc/modprobe.d/modprobe.conf ]; then
 		mv /etc/modprobe.conf /etc/modprobe.d/
 	fi
 fi
