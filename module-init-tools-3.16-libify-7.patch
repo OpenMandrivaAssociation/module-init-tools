@@ -1,0 +1,32 @@
+diff -p -up ./logging.c.tv ./logging.c
+--- ./logging.c.tv	2011-11-21 13:25:59.973006400 +0000
++++ ./logging.c	2011-11-21 13:32:58.737003383 +0000
+@@ -16,6 +16,15 @@ int quiet = 0;
+ /* Do we want informative messages as well as errors? */
+ int verbose = 0;
+ 
++int get_quiet() {
++	return quiet;
++}
++
++void set_quiet(int i) {
++	quiet = i;
++}
++
++
+ void message(const char *prefix, const char *fmt, va_list *arglist)
+ {
+ 	int ret;
+diff -p -up ./logging.h.tv ./logging.h
+--- ./logging.h.tv	2011-11-21 12:53:14.925200511 +0000
++++ ./logging.h	2011-11-21 13:28:12.060005004 +0000
+@@ -7,6 +7,9 @@ extern int logging;
+ /* Do we want to silently drop all warnings? */
+ extern int quiet;
+ 
++int get_quiet();
++void set_quiet(int);
++
+ /* Do we want informative messages as well as errors? */
+ extern int verbose;
+ 

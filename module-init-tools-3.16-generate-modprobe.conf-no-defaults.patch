@@ -1,0 +1,52 @@
+diff -p -up ./generate-modprobe.conf.generate-modprobe.conf-no-defaults ./generate-modprobe.conf
+--- ./generate-modprobe.conf.generate-modprobe.conf-no-defaults	2011-06-02 17:55:01.000000000 +0000
++++ ./generate-modprobe.conf	2011-06-17 13:53:16.984942789 +0000
+@@ -4,7 +4,7 @@
+ # Normal caveats apply, as with any machine translation.
+ usage() {
+ 	cat <<-EOF
+-		Usage: $0 [--assume-kernel=n.n.n] [--stdin] [modprobe.conf]
++		Usage: $0 [--assume-kernel=n.n.n] [--stdin|--use-modprobe-c] [modprobe.conf]
+ 		   Converts your current modules setup to modprobe.conf.
+ 		   Don't trust it too much.
+ 		 Version 0.1
+@@ -14,17 +14,24 @@ usage() {
+ 
+ KV=$(uname -r)
+ STDIN=
++DEFAULT_MODPROBE_CONF="/etc/modules.conf"
++[ -n "$TESTING_MODPROBE_CONF" ] && DEFAULT_MODPROBE_CONF=$TESTING_MODPROBE_CONF
+ while [ -n "$1" ] ; do
+ 	case $1 in
+ 	--assume-kernel)   KV=$2; shift;;
+ 	--assume-kernel=*) KV=${1#*=};;
+ 	--stdin)           STDIN=1;;
++	--use-modprobe-c) DEFAULT_MODPROBE_CONF=;;
+ 	-h|--help)         usage 0;;
+ 	*)                 break;;
+ 	esac
+ 	shift
+ done
+ 
++if [ -n "$STDIN" -a -n "$DEFAULT_MODPROBE_CONF" ]; then
++    usage
++fi
++
+ # Set up output if specified.
+ if [ $# -eq 1 ] ; then
+ 	exec > $1
+@@ -41,8 +48,12 @@ modprobe_abort()
+     exit 1
+ }
+ 
+-if [ x"$TESTING_MODPROBE_CONF" != x ]; then
+-    cp $TESTING_MODPROBE_CONF $MODPROBECONF
++if [ x"$DEFAULT_MODPROBE_CONF" != x ]; then
++    if [ ! -f $DEFAULT_MODPROBE_CONF ]; then
++	echo $DEFAULT_MODPROBE_CONF not found. Exiting ... >&2
++	exit 0
++    fi
++    cp $DEFAULT_MODPROBE_CONF $MODPROBECONF
+ elif [ "$STDIN" = "1" ]; then
+     cat > $MODPROBECONF
+ elif [ -x /sbin/modprobe.old ]; then

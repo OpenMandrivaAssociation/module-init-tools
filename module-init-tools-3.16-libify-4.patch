@@ -1,0 +1,644 @@
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/depmod.c module-init-tools-3.16/depmod.c
+--- module-init-tools-3.16.old/depmod.c	2011-11-21 12:00:18.322805215 +0000
++++ module-init-tools-3.16/depmod.c	2011-11-21 12:12:25.920781137 +0000
+@@ -181,13 +181,13 @@
+ 	}
+ 	if (s) {
+ 		if (ver && s->ver && s->ver != ver && print_unknown && !weak)
+-			warn("%s disagrees about version of symbol %s\n",
++			mod_warn("%s disagrees about version of symbol %s\n",
+ 					modname, name);
+ 		return s->owner;
+ 	}
+ 
+ 	if (print_unknown && !weak) {
+-		warn("%s needs unknown symbol %s\n", modname, name);
++		mod_warn("%s needs unknown symbol %s\n", modname, name);
+ 		unknown_symbol = 1;
+ 	}
+ 
+@@ -242,7 +242,7 @@
+ 
+ 	system_map = fopen(filename, "r");
+ 	if (!system_map)
+-		fatal("Could not open '%s': %s\n", filename, strerror(errno));
++		mod_fatal("Could not open '%s': %s\n", filename, strerror(errno));
+ 
+ 	/* eg. c0294200 R __ksymtab_devfs_alloc_devnum */
+ 	while (fgets(line, sizeof(line)-1, system_map)) {
+@@ -283,7 +283,7 @@
+ 
+ 	module_symvers = fopen(filename, "r");
+ 	if (!module_symvers)
+-		fatal("Could not open '%s': %s\n", filename, strerror(errno));
++		mod_fatal("Could not open '%s': %s\n", filename, strerror(errno));
+ 
+ 	/* eg. "0xb352177e\tfind_first_bit\tvmlinux\tEXPORT_SYMBOL" */
+ 	while (fgets(line, sizeof(line)-1, module_symvers)) {
+@@ -449,7 +449,7 @@
+ 
+ 	new->file = grab_elf_file(new->pathname);
+ 	if (!new->file) {
+-		warn("Can't read module %s: %s\n",
++		mod_warn("Can't read module %s: %s\n",
+ 		     new->pathname, strerror(errno));
+ 		free(new);
+ 		return NULL;
+@@ -507,7 +507,7 @@
+ 	if (mod != i->mod)
+ 		return;
+ 
+-	warn("Loop detected: %s ", mod->pathname);
++	mod_warn("Loop detected: %s ", mod->pathname);
+ 	for (i = traverse->prev; i->prev; i = i->prev)
+ 		fprintf(stderr, "needs %s ", i->mod->basename);
+ 	fprintf(stderr, "which needs %s again!\n", i->mod->basename);
+@@ -688,7 +688,7 @@
+ 			list_del_init(j);
+ 		}
+ 		if (index_insert(index, modname, line, i->order) && warn_dups)
+-			warn("duplicate module deps:\n%s\n",line);
++			mod_warn("duplicate module deps:\n%s\n",line);
+ 		free(line);
+ 	}
+ 	
+@@ -875,7 +875,7 @@
+ 
+ 	dir = opendir(dirname);
+ 	if (!dir) {
+-		warn("Couldn't open directory %s: %s\n",
++		mod_warn("Couldn't open directory %s: %s\n",
+ 		     dirname, strerror(errno));
+ 		return NULL;
+ 	}
+@@ -913,7 +913,7 @@
+ 		   return if the file doesn't exist. */
+ 		if (errno == ENOENT)
+ 			return list;
+-		fatal("Could not open '%s': %s\n", file_name, strerror(errno));
++		mod_fatal("Could not open '%s': %s\n", file_name, strerror(errno));
+ 	}
+ 
+ 	sprintf(line, "%s/", dirname);
+@@ -1031,7 +1031,7 @@
+  again:
+ 	for (i = list; i; i = i->next) {
+ 		if (has_dep_loop(i, NULL)) {
+-			warn("Module %s ignored, due to loop\n",
++			mod_warn("Module %s ignored, due to loop\n",
+ 			     i->pathname + skipchars);
+ 			del_module(&list, i);
+ 			goto again;
+@@ -1103,7 +1103,7 @@
+ 				duplicate = index_insert(index, alias, modname,
+ 							 s->owner->order);
+ 				if (duplicate && warn_dups)
+-					warn("duplicate module syms:\n%s %s\n",
++					mod_warn("duplicate module syms:\n%s %s\n",
+ 						alias, modname);
+ 				free(alias);
+ 			}
+@@ -1134,7 +1134,7 @@
+ 	nofail_asprintf(&textfile, "%s/modules.builtin", dirname);
+ 	if (!(f = fopen(textfile, "r"))) {
+ 		if (errno != ENOENT)
+-			fatal("Could not open '%s': %s\n",
++			mod_fatal("Could not open '%s': %s\n",
+ 					textfile, strerror(errno));
+ 		free(textfile);
+ 		return 0;
+@@ -1234,7 +1234,7 @@
+ 			underscores(alias);
+ 			duplicate = index_insert(index, alias, modname, i->order);
+ 			if (duplicate && warn_dups)
+-				warn("duplicate module alias:\n%s %s\n",
++				mod_warn("duplicate module alias:\n%s %s\n",
+ 					alias, modname);
+ 			free(alias);
+ 		}
+@@ -1249,7 +1249,7 @@
+ 				underscores(alias);
+ 				duplicate = index_insert(index, alias, modname, i->order);
+ 				if (duplicate && warn_dups)
+-					warn("duplicate module alias:\n%s %s\n",
++					mod_warn("duplicate module alias:\n%s %s\n",
+ 						alias, modname);
+ 				free(alias);
+ 			}
+@@ -1528,7 +1528,7 @@
+ 	cfile = fopen(filename, "r");
+ 	if (!cfile) {
+ 		if (errno != ENOENT)
+-			fatal("could not open '%s', reason: %s\n", filename,
++			mod_fatal("could not open '%s', reason: %s\n", filename,
+ 			      strerror(errno));
+ 		return 0;
+ 	}
+@@ -1584,16 +1584,16 @@
+ 			if (!newfilename) {
+ 				grammar(cmd, filename, linenum);
+ 			} else {
+-				warn("\"include %s\" is deprecated, "
++				mod_warn("\"include %s\" is deprecated, "
+ 				     "please use /etc/depmod.d\n", newfilename);
+ 				if (strstarts(newfilename, "/etc/depmod.d")) {
+-					warn("\"include /etc/depmod.d\" is "
++					mod_warn("\"include /etc/depmod.d\" is "
+ 					     "the default, ignored\n");
+ 				} else {
+ 					if (!parse_config_scan(newfilename, basedir,
+ 							       kernelversion,
+ 							       search, overrides))
+-					warn("Failed to open included"
++					mod_warn("Failed to open included"
+ 					     " config file %s: %s\n",
+ 					     newfilename, strerror(errno));
+ 				}
+@@ -1661,7 +1661,7 @@
+ 
+ 			len = strlen(i->d_name);
+ 			if (len < 6 || strcmp(&i->d_name[len-5], ".conf") != 0)
+-				warn("All config files need .conf: %s/%s, "
++				mod_warn("All config files need .conf: %s/%s, "
+ 				     "it will be ignored in a future release.\n",
+ 				     filename, i->d_name);
+ 			fe = malloc(sizeof(struct file_entry) + len + 1);
+@@ -1682,7 +1682,7 @@
+ 			nofail_asprintf(&cfgfile, "%s/%s", filename, fe->name);
+ 			if (!parse_config_file(cfgfile, basedir, kernelversion,
+ 					       search, overrides))
+-				warn("Failed to open config file "
++				mod_warn("Failed to open config file "
+ 				     "%s: %s\n", fe->name, strerror(errno));
+ 			free(cfgfile);
+ 			list_del(&fe->node);
+@@ -1718,7 +1718,7 @@
+ 	if (filename) {
+ 		if (!parse_config_scan(filename, basedir, kernelversion, search,
+ 				 overrides))
+-			fatal("Failed to open config file %s: %s\n",
++			mod_fatal("Failed to open config file %s: %s\n",
+ 			      filename, strerror(errno));
+ 		return;
+ 	}
+@@ -1726,7 +1726,7 @@
+ 	/* deprecated config file */
+ 	if (parse_config_file("/etc/depmod.conf", basedir, kernelversion,
+ 			      search, overrides) > 0)
+-		warn("Deprecated config file /etc/depmod.conf, "
++		mod_warn("Deprecated config file /etc/depmod.conf, "
+ 		      "all config files belong into /etc/depmod.d/.\n");
+ 
+ 	/* default config */
+@@ -1788,7 +1788,7 @@
+ 			break;
+ 		case 'P':
+ 			if (optarg[1] != '\0')
+-				fatal("-P only takes a single char\n");
++				mod_fatal("-P only takes a single char\n");
+ 			sym_prefix = optarg[0];
+ 			break;
+ 		case 'h':
+@@ -1815,7 +1815,7 @@
+ 	else if (system_map)
+ 		load_system_map(system_map);
+ 	else if (print_unknown) {
+-		warn("-e needs -E or -F\n");
++		mod_warn("-e needs -E or -F\n");
+ 		print_unknown = 0;
+ 	}
+ 
+@@ -1868,13 +1868,13 @@
+ 			struct module *new;
+ 
+ 			if (argv[opt][0] != '/')
+-				fatal("modules must be specified using absolute paths.\n"
++				mod_fatal("modules must be specified using absolute paths.\n"
+ 					"\"%s\" is a relative path\n", argv[opt]);
+ 
+ 			new = grab_module(NULL, argv[opt]);
+ 			if (!new) {
+ 				/* cmd-line specified modules must exist */
+-				fatal("grab_module() failed for module %s\n", argv[opt]);
++				mod_fatal("grab_module() failed for module %s\n", argv[opt]);
+ 			}
+ 			new->next = list;
+ 			list = new;
+@@ -1901,7 +1901,7 @@
+ 		if (!doing_stdout) {
+ 			out = fopen(tmpname, "w");
+ 			if (!out)
+-				fatal("Could not open %s for writing: %s\n",
++				mod_fatal("Could not open %s for writing: %s\n",
+ 					tmpname, strerror(errno));
+ 		} else {
+ 			out = stdout;
+@@ -1914,11 +1914,11 @@
+ 		fclose(out);
+ 		if (res) {
+ 			if (rename(tmpname, depname) < 0)
+-				fatal("Could not rename %s into %s: %s\n",
++				mod_fatal("Could not rename %s into %s: %s\n",
+ 					tmpname, depname, strerror(errno));
+ 		} else {
+ 			if (unlink(tmpname) < 0)
+-				warn("Could not delete %s: %s\n",
++				mod_warn("Could not delete %s: %s\n",
+ 					tmpname, strerror(errno));
+ 		}
+ 	}
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/elfops_core.c module-init-tools-3.16/elfops_core.c
+--- module-init-tools-3.16.old/elfops_core.c	2011-06-02 17:55:01.000000000 +0000
++++ module-init-tools-3.16/elfops_core.c	2011-11-21 12:12:25.921781136 +0000
+@@ -88,7 +88,7 @@
+ 	strings = PERBIT(load_section)(module, secname, &size);
+ 	if (strings) {
+ 		if (strings[size-1] != 0) {
+-			warn("%s may be corrupt; an unterminated string"
++			mod_warn("%s may be corrupt; an unterminated string"
+ 			     " was found at the end of section %s\n",
+ 			     module->pathname, secname);
+ 		}
+@@ -196,12 +196,12 @@
+ 		symvers_sec = module->ops->load_section(module, "__versions",
+ 				&size);
+ 		if (!symvers_sec) {
+-			warn("%s is built without modversions",
++			mod_warn("%s is built without modversions",
+ 					module->pathname);
+ 			ok = 0;
+ 		}
+ 		if (size % sizeof(symvers[0]) != 0) {
+-			warn("invalid __versions section size in %s",
++			mod_warn("invalid __versions section size in %s",
+ 					module->pathname);
+ 			ok = 0;
+ 		}
+@@ -223,7 +223,7 @@
+ 	strings = PERBIT(load_section)(module, ".strtab", &size);
+ 	syms = PERBIT(load_section)(module, ".symtab", &size);
+ 	if (!strings || !syms) {
+-		warn("Couldn't find symtab and strtab in module %s\n",
++		mod_warn("Couldn't find symtab and strtab in module %s\n",
+ 		     module->pathname);
+ 		goto out;
+ 	}
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/index.c module-init-tools-3.16/index.c
+--- module-init-tools-3.16.old/index.c	2011-06-02 17:55:01.000000000 +0000
++++ module-init-tools-3.16/index.c	2011-11-21 12:12:25.922781137 +0000
+@@ -76,7 +76,7 @@
+ 		int ch = str[i];
+ 		
+ 		if (ch >= INDEX_CHILDMAX)
+-			fatal("Module index: bad character '%c'=0x%x - only 7-bit ASCII is supported:"
++			mod_fatal("Module index: bad character '%c'=0x%x - only 7-bit ASCII is supported:"
+ 			      "\n%s\n", (char) ch, (int) ch, str);
+ 	}
+ }
+@@ -279,7 +279,7 @@
+ 
+ static void read_error()
+ {
+-	fatal("Module index: unexpected error: %s\n"
++	mod_fatal("Module index: unexpected error: %s\n"
+ 			"Try re-running depmod\n", errno ? strerror(errno) : "EOF");
+ }
+ 
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/libmodprobe.c module-init-tools-3.16/libmodprobe.c
+--- module-init-tools-3.16.old/libmodprobe.c	2011-11-21 12:00:18.324805215 +0000
++++ module-init-tools-3.16/libmodprobe.c	2011-11-21 12:12:25.923781139 +0000
+@@ -589,16 +589,16 @@
+ 			if (!newfilename)
+ 				goto syntax_error;
+ 
+-			warn("\"include %s\" is deprecated, "
++			mod_warn("\"include %s\" is deprecated, "
+ 			     "please use /etc/modprobe.d\n", newfilename);
+ 			if (strstarts(newfilename, "/etc/modprobe.d")) {
+-				warn("\"include /etc/modprobe.d\" is "
++				mod_warn("\"include /etc/modprobe.d\" is "
+ 				     "the default, ignored\n");
+ 			} else {
+ 				if (!parse_config_scan(&newconf, dump_only,
+ 						       removing, newfilename,
+ 						       NULL))
+-					warn("Failed to open included"
++					mod_warn("Failed to open included"
+ 					      " config file %s: %s\n",
+ 					      newfilename, strerror(errno));
+ 			}
+@@ -855,7 +855,7 @@
+ 				if (len < 6 ||
+ 				    (strcmp(&i->d_name[len-5], ".conf") != 0 &&
+ 				     strcmp(&i->d_name[len-6], ".alias") != 0))
+-					warn("All config files need .conf: %s/%s, "
++					mod_warn("All config files need .conf: %s/%s, "
+ 					     "it will be ignored in a future release.\n",
+ 					     filename, i->d_name);
+ 				fe = malloc(sizeof(struct file_entry));
+@@ -896,7 +896,7 @@
+ 		nofail_asprintf(&cfgfile, "%s/%s", fe->path, fe->name);
+ 		if (!parse_config_file(cfgfile, conf,
+ 				       dump_only, removing))
+-			warn("Failed to open config file %s: %s\n",
++			mod_warn("Failed to open config file %s: %s\n",
+ 			     cfgfile, strerror(errno));
+ 		free(cfgfile);
+ 		list_del(&fe->node);
+@@ -937,7 +937,7 @@
+ 	/* deprecated config file */
+ 	if (parse_config_file("/etc/modprobe.conf", conf,
+ 			      dump_only, removing) > 0)
+-		warn("Deprecated config file /etc/modprobe.conf, "
++		mod_warn("Deprecated config file /etc/modprobe.conf, "
+ 		      "all config files belong into /etc/modprobe.d/.\n");
+ 
+ 	/* default config */
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/logging.c module-init-tools-3.16/logging.c
+--- module-init-tools-3.16.old/logging.c	2011-06-02 17:55:01.000000000 +0000
++++ module-init-tools-3.16/logging.c	2011-11-21 12:12:25.924781140 +0000
+@@ -40,7 +40,7 @@
+ 	free(buf);
+ }
+ 
+-void warn(const char *fmt, ...)
++void mod_warn(const char *fmt, ...)
+ {
+ 	va_list arglist;
+ 	va_start(arglist, fmt);
+@@ -57,7 +57,7 @@
+ 	va_end(arglist);
+ }
+ 
+-void fatal(const char *fmt, ...)
++void mod_fatal(const char *fmt, ...)
+ {
+ 	va_list arglist;
+ 	va_start(arglist, fmt);
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/logging.h module-init-tools-3.16/logging.h
+--- module-init-tools-3.16.old/logging.h	2011-11-21 12:07:31.909783745 +0000
++++ module-init-tools-3.16/logging.h	2011-11-21 12:12:25.929781140 +0000
+@@ -16,9 +16,9 @@
+ #define _printf
+ #endif
+ 
+-extern void _printf fatal(const char *fmt, ...);
++extern void _printf mod_fatal(const char *fmt, ...);
+ extern void _printf error(const char *fmt, ...);
+-extern void _printf warn(const char *fmt, ...);
++extern void _printf mod_warn(const char *fmt, ...);
+ extern void _printf info(const char *fmt, ...);
+ 
+ typedef void _printf (*errfn_t)(const char *fmt, ...);
+@@ -26,7 +26,7 @@
+ static inline void grammar(const char *cmd,
+ 			   const char *filename, unsigned int line)
+ {
+-	warn("%s line %u: ignoring bad line starting with '%s'\n",
++	mod_warn("%s line %u: ignoring bad line starting with '%s'\n",
+ 	     filename, line, cmd);
+ }
+ 
+@@ -40,7 +40,7 @@
+ static inline void *do_nofail(void *ptr, const char *file, int line, const char *expr)
+ {
+ 	if (!ptr) {
+-		fatal("Memory allocation failure %s line %d: %s.\n",
++		mod_fatal("Memory allocation failure %s line %d: %s.\n",
+ 		      file, line, expr);
+ 	}
+ 	return ptr;
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/modindex.c module-init-tools-3.16/modindex.c
+--- module-init-tools-3.16.old/modindex.c	2011-06-02 17:55:01.000000000 +0000
++++ module-init-tools-3.16/modindex.c	2011-11-21 12:12:25.924781140 +0000
+@@ -17,7 +17,7 @@
+ 	
+ 	cfile = fopen(filename, "w");
+ 	if (!cfile)
+-		fatal("Could not open %s for writing: %s\n",
++		mod_fatal("Could not open %s for writing: %s\n",
+ 		      filename, strerror(errno));
+ 	
+ 	index = index_create();
+@@ -41,9 +41,9 @@
+ 	index = index_file_open(filename);
+ 	if (!index) {
+ 		if (errno == EINVAL)
+-			fatal("%s has wrong magic or version number", filename);
++			mod_fatal("%s has wrong magic or version number", filename);
+ 
+-		fatal("Could not open %s for reading: %s\n",
++		mod_fatal("Could not open %s for reading: %s\n",
+ 		      filename, strerror(errno));
+ 	}
+ 
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/modprobe.c module-init-tools-3.16/modprobe.c
+--- module-init-tools-3.16.old/modprobe.c	2011-11-21 12:00:18.319805215 +0000
++++ module-init-tools-3.16/modprobe.c	2011-11-21 12:12:25.926781140 +0000
+@@ -460,7 +460,7 @@
+ 	nofail_asprintf(&modules_dep_name, "%s/%s", dirname, "modules.dep");
+ 	modules_dep = fopen(modules_dep_name, "r");
+ 	if (!modules_dep)
+-		fatal("Could not load %s: %s\n",
++		mod_fatal("Could not load %s: %s\n",
+ 		      modules_dep_name, strerror(errno));
+ 
+ 	while ((line = getline_wrapped(modules_dep, NULL)) != NULL) {
+@@ -704,7 +704,7 @@
+ 		softdep_flags |= mit_quiet_inuse;
+ 
+ 	if (++recursion_depth >= MAX_RECURSION)
+-		fatal("modprobe: softdep dependency loop encountered %s %s\n",
++		mod_fatal("modprobe: softdep dependency loop encountered %s %s\n",
+ 			(flags & mit_remove) ? "removing" : "inserting",
+ 			softdep->modname);
+ 
+@@ -724,13 +724,13 @@
+ 		j = (flags & mit_remove) ? pre_modnames->cnt-1 - i : i;
+ 
+ 		do_modprobe(pre_modnames->str[j], "",
+-			conf, dirname, warn, softdep_flags);
++			conf, dirname, mod_warn, softdep_flags);
+ 	}
+ 
+ 	/* Modprobe main module, passing cmdline_opts, ignoring softdep */
+ 
+ 	do_modprobe(softdep->modname, cmdline_opts,
+-		conf, dirname, warn, flags | mit_ignore_commands);
++		conf, dirname, mod_warn, flags | mit_ignore_commands);
+ 
+ 	/* Modprobe post_modnames */
+ 
+@@ -739,7 +739,7 @@
+ 		j = (flags & mit_remove) ? post_modnames->cnt-1 - i : i;
+ 
+ 		do_modprobe(post_modnames->str[j], "", conf,
+-			dirname, warn, softdep_flags);
++			dirname, mod_warn, softdep_flags);
+ 	}
+ }
+ 
+@@ -780,7 +780,7 @@
+ 		modprobe_flags_t f = flags;
+ 		f &= ~mit_first_time;
+ 		f &= ~mit_ignore_commands;
+-		if ((rc = insmod(list, "", "", conf, dirname, warn, f)) != 0)
++		if ((rc = insmod(list, "", "", conf, dirname, mod_warn, f)) != 0)
+ 		{
+ 			error("Error inserting %s (%s): %s\n",
+ 				mod->modname, mod->filename,
+@@ -809,9 +809,9 @@
+ 	command = find_command(mod->modname, conf->commands);
+ 	if (command && !(flags & mit_ignore_commands)) {
+ 		if (already_loaded == -1) {
+-			warn("/sys/module/ not present or too old,"
++			mod_warn("/sys/module/ not present or too old,"
+ 				" and /proc/modules does not exist.\n");
+-			warn("Ignoring install commands for %s"
++			mod_warn("Ignoring install commands for %s"
+ 				" in case it is already loaded.\n",
+ 				mod->modname);
+ 		} else {
+@@ -853,7 +853,7 @@
+ 		}
+ 		/* don't warn noisely if we're loading multiple aliases. */
+ 		/* one of the aliases may try to use hardware we don't have. */
+-		if ((error != warn) || (verbose))
++		if ((error != mod_warn) || (verbose))
+ 			error("Error inserting %s (%s): %s\n",
+ 			      mod->modname, mod->filename,
+ 			      insert_moderror(errno));
+@@ -911,9 +911,9 @@
+ 	command = find_command(mod->modname, conf->commands);
+ 	if (command && !(flags & mit_ignore_commands)) {
+ 		if (exists == -1) {
+-			warn("/sys/module/ not present or too old,"
++			mod_warn("/sys/module/ not present or too old,"
+ 				" and /proc/modules does not exist.\n");
+-			warn("Ignoring remove commands for %s"
++			mod_warn("Ignoring remove commands for %s"
+ 				" in case it is not loaded.\n",
+ 				mod->modname);
+ 		} else {
+@@ -951,14 +951,14 @@
+ 		flags &= ~mit_ignore_commands;
+ 		flags |= mit_quiet_inuse;
+ 
+-		rmmod(list, "", conf, dirname, warn, flags);
++		rmmod(list, "", conf, dirname, mod_warn, flags);
+ 	}
+ 	free_module(mod);
+ 	return;
+ 
+ nonexistent_module:
+ 	if (flags & mit_first_time)
+-		fatal("Module %s is not in kernel.\n", mod->modname);
++		mod_fatal("Module %s is not in kernel.\n", mod->modname);
+ 	goto remove_rest;
+ }
+ 
+@@ -1053,7 +1053,7 @@
+ 
+ 		/* More than one alias?  Don't bail out on failure. */
+ 		if (aliases->next)
+-			err = warn;
++			err = mod_warn;
+ 		while (aliases) {
+ 			/* Add the options for this alias. */
+ 			char *opts;
+@@ -1124,7 +1124,7 @@
+ 	char *basedir = "";
+ 	char *cmdline_opts = NULL;
+ 	char *dirname;
+-	errfn_t error = fatal;
++	errfn_t error = mod_fatal;
+ 	int failed = 0;
+ 	modprobe_flags_t flags = 0;
+ 	struct modprobe_conf conf = {};
+@@ -1189,7 +1189,7 @@
+ 			break;
+ 		case 'a':
+ 			all = 1;
+-			error = warn;
++			error = mod_warn;
+ 			break;
+ 		case 'i':
+ 			flags |= mit_ignore_commands;
+@@ -1232,13 +1232,13 @@
+ 	/* Old-style -t xxx wildcard?  Only with -l. */
+ 	if (list_only) {
+ 		if (optind+1 < argc)
+-			fatal("Can't have multiple wildcards\n");
++			mod_fatal("Can't have multiple wildcards\n");
+ 		/* fprintf(stderr, "man find\n"); return 1; */
+ 		failed = do_wildcard(dirname, type, argv[optind]?:"*");
+ 		goto out;
+ 	}
+ 	if (type)
+-		fatal("-t only supported with -l");
++		mod_fatal("-t only supported with -l");
+ 
+ 	if (dump_modver) {
+ 		dump_modversions(argv[optind], error);
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/rmmod.c module-init-tools-3.16/rmmod.c
+--- module-init-tools-3.16.old/rmmod.c	2011-06-02 17:55:01.000000000 +0000
++++ module-init-tools-3.16/rmmod.c	2011-11-21 12:12:25.926781140 +0000
+@@ -77,11 +77,11 @@
+ 	if (!module_list) {
+ 		if (errno == ENOENT) /* /proc may not be mounted. */
+ 			return 0;
+-		fatal("can't open /proc/modules: %s\n", strerror(errno));
++		mod_fatal("can't open /proc/modules: %s\n", strerror(errno));
+ 	}
+ 	while (fgets(line, sizeof(line)-1, module_list) != NULL) {
+ 		if (strchr(line, '\n') == NULL) {
+-			fatal("V. v. long line broke rmmod.\n");
++			mod_fatal("V. v. long line broke rmmod.\n");
+ 			exit(1);
+ 		}
+ 
+@@ -90,10 +90,10 @@
+ 			continue;
+ 
+ 		if (scanned < 2)
+-			fatal("Unknown format in /proc/modules: %s\n", line);
++			mod_fatal("Unknown format in /proc/modules: %s\n", line);
+ 
+ 		if (scanned == 2)
+-			fatal("Kernel does not have unload support.\n");
++			mod_fatal("Kernel does not have unload support.\n");
+ 
+ 		/* Hand it fields 3 onwards. */
+ 		if (refs != 0)
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/util.c module-init-tools-3.16/util.c
+--- module-init-tools-3.16.old/util.c	2011-06-02 17:55:01.000000000 +0000
++++ module-init-tools-3.16/util.c	2011-11-21 12:12:25.927781140 +0000
+@@ -102,13 +102,13 @@
+ 			break;
+ 
+ 		case ']':
+-			warn("Unmatched bracket in %s\n", string);
++			mod_warn("Unmatched bracket in %s\n", string);
+ 			break;
+ 
+ 		case '[':
+ 			i += strcspn(&string[i], "]");
+ 			if (!string[i])
+-				warn("Unmatched bracket in %s\n", string);
++				mod_warn("Unmatched bracket in %s\n", string);
+ 			break;
+ 		}
+ 	}
+diff -x configure -x autom4te.cache -x '*.m4' -ru module-init-tools-3.16.old/zlibsupport.c module-init-tools-3.16/zlibsupport.c
+--- module-init-tools-3.16.old/zlibsupport.c	2011-06-02 17:55:01.000000000 +0000
++++ module-init-tools-3.16/zlibsupport.c	2011-11-21 12:12:25.927781140 +0000
+@@ -50,7 +50,7 @@
+ 	gzfd = gzopen(filename, "rb");
+ 	if (!gzfd) {
+ 		if (errno == ENOMEM)
+-			fatal("Memory allocation failure in gzopen\n");
++			mod_fatal("Memory allocation failure in gzopen\n");
+ 		return NULL;
+ 	}
+ 	buffer = grab_contents(gzfd, size);
+

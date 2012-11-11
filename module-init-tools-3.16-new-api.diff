@@ -1,0 +1,91 @@
+(find_matching_aliases) extract it from do_modprobe() so that ldetect and the installer
+can use modprobe logic for identifying which driver handles that modalias
+
+diff -p -up ./modprobe.c.tv ./modprobe.c
+--- ./modprobe.c.tv	2011-10-09 19:04:35.086474212 +0200
++++ ./modprobe.c	2011-10-09 19:17:08.102402843 +0200
+@@ -1987,7 +1987,7 @@ static int handle_builtin_module(const c
+ }
+ 
+ /**
+- * do_modprobe - find a module by name or alias and load or unload
++ * find_matching_aliases - find a module by name or alias and load or unload
+  *
+  * @modname:		module name
+  * @cmdline_opts:	command line options
+@@ -1997,15 +1997,15 @@ static int handle_builtin_module(const c
+  * @flags:		general flags
+  *
+  */
+-static int do_modprobe(const char *modname,
++struct module_alias *find_matching_aliases(const char *modname,
+ 		const char *cmdline_opts,
+ 		const struct modprobe_conf *conf,
+ 		const char *dirname,
+ 		errfn_t error,
+-		modprobe_flags_t flags)
++		modprobe_flags_t flags,
++		struct list_head *list)
+ {
+ 	struct module_alias *matching_aliases;
+-	LIST_HEAD(list);
+ 	int failed = 0;
+ 
+ 	matching_aliases = find_aliases(conf->aliases, modname);
+@@ -2020,10 +2020,10 @@ static int do_modprobe(const char *modna
+ 	}
+ 	if (!matching_aliases) {
+ 		if(!strchr(modname, ':'))
+-			read_depends(dirname, modname, &list);
++			read_depends(dirname, modname, list);
+ 
+ 		/* We only use canned aliases as last resort. */
+-		if (list_empty(&list)
++		if (list_empty(list)
+ 		    && !find_softdep(modname, conf->softdeps)
+ 		    && !find_command(modname, conf->commands))
+ 		{
+@@ -2045,6 +2045,43 @@ static int do_modprobe(const char *modna
+ 
+ 	/* only load blacklisted modules with specific request (no alias) */
+ 	apply_blacklist(&matching_aliases, conf->blacklist);
++
++	if(flags & mit_resolve_alias) {
++		struct module_alias *aliases = matching_aliases;
++
++		for(; aliases; aliases=aliases->next)
++			printf("%s\n", aliases->module);
++	}
++out:
++	return matching_aliases;
++}
++
++/**
++ * do_modprobe - find a module by name or alias and load or unload
++ *
++ * @modname:		module name
++ * @cmdline_opts:	command line options
++ * @conf:		config options lists
++ * @dirname:		module directory
++ * @error:		error function
++ * @flags:		general flags
++ *
++ */
++static int do_modprobe(const char *modname,
++		const char *cmdline_opts,
++		const struct modprobe_conf *conf,
++		const char *dirname,
++		errfn_t error,
++		modprobe_flags_t flags)
++{
++	struct module_alias *matching_aliases;
++	LIST_HEAD(list);
++	int failed = 0;
++
++	matching_aliases = find_matching_aliases(modname, cmdline_opts, conf, dirname, error, flags, &list);
++
++	/* only load blacklisted modules with specific request (no alias) */
++	apply_blacklist(&matching_aliases, conf->blacklist);
+ 
+ 	if(flags & mit_resolve_alias) {
+ 		struct module_alias *aliases = matching_aliases;

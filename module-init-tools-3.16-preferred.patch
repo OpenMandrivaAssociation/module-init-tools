@@ -1,0 +1,35 @@
+diff -p -up ./modprobe.c.dont-break-depend ./modprobe.c
+--- ./modprobe.c.dont-break-depend	2011-06-17 13:55:51.954072649 +0000
++++ ./modprobe.c	2011-06-17 14:37:20.759159019 +0000
+@@ -1259,6 +1261,7 @@ int main(int argc, char *argv[])
+ 		nofail_asprintf(&aliasfilename, "%s/modules.alias", dirname);
+ 		nofail_asprintf(&symfilename, "%s/modules.symbols", dirname);
+ 
++		read_aliases(PREFERRED_ALIASES, "", 1, &conf.aliases);
+ 		read_aliases(aliasfilename, "", 1, &conf.aliases);
+ 		read_aliases(symfilename, "", 1, &conf.aliases);
+ 
+diff -p -up ./libmodprobe.c.preferred ./libmodprobe.c
+--- ./libmodprobe.c.preferred	2011-10-05 18:51:04.616308906 +0200
++++ ./libmodprobe.c	2011-10-05 18:51:06.445454366 +0200
+@@ -869,6 +869,8 @@ struct module_alias *find_matching_alias
+ 		{
+ 			char *aliasfilename;
+ 
++			read_aliases(PREFERRED_ALIASES, modname, 0,
++				     &matching_aliases);
+ 			nofail_asprintf(&aliasfilename, "%s/modules.alias",
+ 					dirname);
+ 			read_aliases(aliasfilename, modname, 0,
+diff -p -up ./modprobe.h.tv7 ./modprobe.h
+--- ./modprobe.h.tv7	2011-10-05 19:14:09.109377729 +0200
++++ ./modprobe.h	2011-10-05 19:14:19.265193625 +0200
+@@ -5,6 +5,8 @@
+ #define MODULE_DIR "/lib/modules"
+ #endif
+ 
++#define PREFERRED_ALIASES "/lib/module-init-tools/ldetect-lst-modules.alias"
++
+ extern int use_binary_indexes;
+ 
+ /* structures */

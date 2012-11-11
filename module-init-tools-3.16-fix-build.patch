@@ -1,0 +1,28 @@
+diff -p -up ./Makefile.am.tv ./Makefile.am
+--- ./Makefile.am.tv	2011-06-17 15:22:23.934744765 +0000
++++ ./Makefile.am	2011-06-17 15:22:11.502732999 +0000
+@@ -37,7 +37,7 @@ EXTRA_depmod_SOURCES =
+ EXTRA_modinfo_SOURCES =
+ 
+ libmodtools_a_SOURCES = util.c logging.c index.c config_filter.c elfops.c \
+-	util.h depmod.h logging.h index.h list.h config_filter.h elfops.h
++	util.h depmod.h logging.h index.h list.h config_filter.h elfops.h zlibsupport.c zlibsupport.h
+ libmodtools_a_CFLAGS = -ffunction-sections
+ 
+ EXTRA_libmodtools_a_SOURCES = elfops_core.c
+diff -up ./depmod.c.tv ./depmod.c
+--- ./depmod.c.tv	2011-06-21 15:57:39.042248156 +0000
++++ ./depmod.c	2011-06-21 15:56:46.606188764 +0000
+@@ -35,6 +35,11 @@
+ #include <sys/utsname.h>
+ #include <sys/mman.h>
+ 
++/* fix dietlibc build: */
++#ifndef UINT32_MAX
++# define UINT32_MAX               (4294967295U)
++#endif
++
+ #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+ 
+ #include "util.h"
+diff -up ./objs-diet/depmod.c.tv ./objs-diet/depmod.c

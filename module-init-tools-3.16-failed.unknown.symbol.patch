@@ -1,0 +1,30 @@
+diff -p -up ./depmod.c.failed-symb ./depmod.c
+--- ./depmod.c.failed-symb	2011-06-02 17:55:01.000000000 +0000
++++ ./depmod.c	2011-06-17 13:54:46.893018674 +0000
+@@ -145,6 +145,7 @@ static void add_symbol(const char *name,
+ }
+ 
+ static int print_unknown, check_symvers;
++static int unknown_symbol = 0;
+ 
+ /**
+  * find_symbol - lookup module owning a symbol in the symbol hash list
+@@ -180,8 +181,10 @@ static struct module *find_symbol(const
+ 		return s->owner;
+ 	}
+ 
+-	if (print_unknown && !weak)
++	if (print_unknown && !weak) {
+ 		warn("%s needs unknown symbol %s\n", modname, name);
++		unknown_symbol = 1;
++	}
+ 
+ 	return NULL;
+ }
+@@ -1918,5 +1921,5 @@ int main(int argc, char *argv[])
+ 	free(dirname);
+ 	free(version);
+ 	
+-	return 0;
++	return unknown_symbol;
+ }

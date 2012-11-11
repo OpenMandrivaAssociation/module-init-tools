@@ -1,0 +1,51 @@
+(libfatal) exit() is not a user-friendly user managment method in a library
+
+diff -p -up ./libmodprobe.c.tv2 ./libmodprobe.c
+--- ./libmodprobe.c.tv2	2011-10-09 21:01:30.822390915 +0200
++++ ./libmodprobe.c	2011-10-09 21:03:34.667046078 +0200
+@@ -56,6 +56,18 @@
+ /* NOTE: in the future, binary indexes will always be used */
+ int use_binary_indexes = 1; /* default to enabled. */
+ 
++#define libfatal(fmt, ...) { \
++    __libfatal(fmt, ## __VA_ARGS__);		\
++    return;					\
++};
++static void __libfatal(const char *fmt, ...) {
++  va_list arglist;
++  va_start(arglist, fmt);
++  message("FATAL:", fmt, &arglist);
++  va_end(arglist);
++  return;
++}
++
+ /**
+  * find_module - search module list for module name
+  *
+@@ -221,7 +233,7 @@ static int read_depends_file(const char
+ 	if (line) {
+ 		/* Value is standard dependency line format */
+ 		if (!add_modules_dep_line(line, start_name, list, dirname))
+-			fatal("Module index is inconsistent\n");
++			libfatal("Module index is inconsistent\n");
+ 		free(line);
+ 	}
+ 
+@@ -255,7 +267,7 @@ void read_depends(const char *dirname,
+ 	nofail_asprintf(&modules_dep_name, "%s/%s", dirname, "modules.dep");
+ 	modules_dep = fopen(modules_dep_name, "r");
+ 	if (!modules_dep)
+-		fatal("Could not load %s: %s\n",
++		libfatal("Could not load %s: %s\n",
+ 		      modules_dep_name, strerror(errno));
+ 
+ 	/* Stop at first line, as we can have duplicates (eg. symlinks
+@@ -914,7 +926,7 @@ void parse_toplevel_config(const char *f
+ 	if (filename) {
+ 		if (!parse_config_scan(conf, dump_only, removing, filename,
+ 				       NULL))
+-			fatal("Failed to open config file %s: %s\n",
++			libfatal("Failed to open config file %s: %s\n",
+ 			      filename, strerror(errno));
+ 		return;
+ 	}

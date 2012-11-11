@@ -1,0 +1,12 @@
+diff -p -up ./modprobe.c.dont-break-depend ./modprobe.c
+--- ./modprobe.c.dont-break-depend	2011-06-17 13:41:10.000000000 +0000
++++ ./modprobe.c	2011-06-17 13:41:43.703344041 +0000
+@@ -1065,7 +1065,7 @@ static int insmod(struct list_head *list
+ 	list_del(&mod->list);
+ 
+ 	/* Do things we (or parent) depend on first. */
+-	if (!list_empty(list)) {
++	while (!list_empty(list)) {
+ 		modprobe_flags_t f = flags;
+ 		f &= ~mit_first_time;
+ 		f &= ~mit_ignore_commands;
