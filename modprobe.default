@@ -1,0 +1,151 @@
+####################################################################
+#
+# This is the default modprobe.conf as generated from default
+# modutils configuration. It is likely to be incomplete and/or
+# incorrect. Changes against modutils:
+#
+#	- NVdriver has been renamed to nvidia. If you happen to have
+#	  very old driver - add alias nvidia NVdriver to modprobe.conf
+#
+#	- remove minors for atixlmouse, msbusmouse, busmouse - they are
+#         not use anymore.
+#
+#	- ldisc-2 == serport (serial port mouse)
+#
+#	- ldisc-11 == irtty_sir. Those Who Know claim irtty to be broken
+#	  It means some dongles currently won't work.
+#
+#	- input crap is gone. It is loaded by hotplug
+#
+#	- replace all aliases with install commands. Unfortunatelt there
+#	  is no way to easily disable aliased modules without knowing
+#	  what they resolve to.
+#
+#	- provide standard "off" and "none"
+#
+#	- remove all modules that define MODULE_ALIAS
+#
+#	- kernel 2.6.0 calls char-major-N-M not char-major-N
+#
+#	- aliases are back again
+#
+#	- fix? binfmt (request_module("binfmt-%04x")
+#
+# Andrey Borzenkov <arvidjaar@mail.ru> 07-JAN-2004
+#
+####################################################################
+
+install off /bin/true
+install null /bin/true
+
+# binfmt; request_module binfmt-04x (fs/exec.d)
+alias binfmt-0204	binfmt_aout
+alias binfmt-0263	binfmt_aout
+alias binfmt-0264	binfmt_aout
+alias binfmt-0267	binfmt_aout
+alias binfmt-0387	binfmt_aout
+alias binfmt-0332	iBCS
+alias binfmt-0310	binfmt_java
+
+# block devices; request_module block-major-%d (drivers/block/genhd.c)
+alias block-major-1	rd
+alias block-major-3	ide-probe-mod
+alias block-major-7	loop
+alias block-major-8	sd_mod
+alias block-major-9	md
+alias block-major-11	sr_mod
+alias block-major-22	ide-probe-mod
+alias block-major-26	sbpcd
+alias block-major-27	sbpcd
+alias block-major-33	ide-probe-mod
+alias block-major-34	ide-probe-mod
+alias block-major-37	ide-tape
+alias block-major-44	ftl
+alias block-major-46	pcd
+alias block-major-47	pf
+alias block-major-56	ide-probe-mod
+alias block-major-57	ide-probe-mod
+alias block-major-58	lvm-mod
+alias block-major-88	ide-probe-mod
+alias block-major-89	ide-probe-mod
+alias block-major-90	ide-probe-mod
+alias block-major-91	ide-probe-mod
+alias block-major-93	nftl
+alias block-major-97	pg
+
+# character devices; request_module char-major-%d-%d (fs/char_dev.c)
+# misc devices (major 10) are loaded in drivers/char/misc.c
+alias char-major-4-*	serial
+alias char-major-5-*	serial
+alias char-major-9-*	st
+alias char-major-10-139	openprom
+alias char-major-10-157	applicom
+alias char-major-10-184	microcode
+alias char-major-13-*	input
+alias char-major-14-*	soundcore
+alias char-major-19-*	cyclades
+alias char-major-20-*	cyclades
+alias char-major-21-*	sg
+alias char-major-22-*	pcxx
+alias char-major-23-*	pcxx
+alias char-major-27-*	ftape
+alias char-major-34-*	scc
+alias char-major-35-*	tclmidi
+alias char-major-36-*	netlink
+alias char-major-37-*	ide-tape
+alias char-major-48-*	riscom8
+alias char-major-49-*	riscom8
+alias char-major-57-*	esp
+alias char-major-58-*	esp
+alias char-major-63-*	kdebug
+alias char-major-90-*	mtdchar
+alias char-major-96-*	pt
+alias char-major-99-*	ppdev
+alias char-major-107-*	3dfx
+alias char-major-109-*	lvm-mod
+alias char-major-161-*	ircomm-tty
+alias char-major-171-*	raw1394
+alias char-major-195-*	nvidia
+alias char-major-200-*	vxspec
+alias char-major-206-*	osst
+
+# default aliases carried over from modutils
+# most of them probably can just go away now
+alias dos	msdos
+alias dummy0	dummy
+alias dummy1	dummy
+alias iso9660	isofs
+alias netalias-2	ip_alias
+alias irlan0	irlan
+alias plip0	plip
+alias plip1	plip
+alias tunl0	ipip
+alias cipcb0	cipcb
+alias cipcb1	cipcb
+alias cipcb2	cipcb
+alias cipcb3	cipcb
+alias ppp0	ppp_async
+alias ppp1	ppp_async
+alias slip0	slip
+alias slip1	slip
+alias ppp	ppp_async
+alias parport_lowlevel	parport_pc
+alias usbdevfs	usbcore
+options sb io=0x220 irq=7 dma=1 dma16=5 mpu_io=0x330
+install binfmt-0000 /bin/true
+install dummy0 /sbin/modprobe -o dummy0 --first-time --ignore-install dummy
+install dummy1 /sbin/modprobe -o dummy1 --first-time --ignore-install dummy
+install eth0 /bin/true
+install net-pf-3 /bin/true
+install ov518_decomp { /sbin/modprobe ov511; }; /sbin/modprobe --first-time --ignore-install ov518_decomp
+remove ov518_decomp /sbin/modprobe -r --first-time --ignore-remove ov518_decomp && { /sbin/modprobe -r ov511; /bin/true; }
+
+# (oe) required for nfsv4 if nfs-utils-1.0.7-1mdk is compiled with nfsv4 support
+install nfsd /sbin/modprobe --first-time --ignore-install nfsd && { /bin/mount -t nfsd nfsd /proc/fs/nfsd > /dev/null 2>&1 || :; }
+install sunrpc /sbin/modprobe --first-time --ignore-install sunrpc && { /bin/mount -t rpc_pipefs sunrpc /var/lib/nfs/rpc_pipefs > /dev/null 2>&1 || :; }
+remove sunrpc { /bin/umount /var/lib/nfs/rpc_pipefs > /dev/null 2>&1 || :; } ; /sbin/modprobe -r --ignore-remove sunrpc
+remove nfsd { /bin/umount /proc/fs/nfsd > /dev/null 2>&1 || :; } ; /sbin/modprobe -r --first-time --ignore-remove nfsd
+alias nfs4 nfs
+alias rpc_pipefs sunrpc
+alias rpc_svc_gss_pipefs sunrpc
+

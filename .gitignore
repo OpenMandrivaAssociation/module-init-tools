@@ -1,6 +1,0 @@
-blacklist-compat.conf
-blacklist-mdv.conf
-ipw-no-associate.conf
-modprobe.default
-modprobe.preload
-module-init-tools-3.16.tar.bz2

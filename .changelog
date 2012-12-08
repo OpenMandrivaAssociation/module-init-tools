@@ -1,0 +1,39 @@
+- don't support old /etc/modules.conf and put all config files
+/etc/modprobe.d
+- don't bother shipping 'COPYING' as it's provided by 'common-licenses'
+package
+- update license tag (GPL -> GPLv2+)
+- consistently use %%{_sysconfdir} macro
+- don't remove /sbin/insmod.static on %%{ix86}
+- drop obsoletes on %%{_lib}modprobe0-devel
+- use %%rename macro for module-init-tools-devel
+- drop explicit library package name dependency
+- remove ancient conflicts/obsoletes on modutils& devfsd
+- use %%bcond for dietlibc build
+- drop dead %%toalternate macro
+- fix link order in xz patch
+- regenerate xz patch (P20)
+- merge changes from mageia:
+  	o provide static tools
+  	o reduce number of runtime warnings
+  	o drop kernel 2.4 -> 2.6 module mapping which is uneeded for long
+time
+  	o drop patch 3 and move modprobe.default in modprobe.d
+  	o drop patch 6 and move ldetect-lst in modprobe.d
+  	  (still read before kernel aliases list)
+  	o document remaining patches
+  	o patch 9: rename warn() as mod_warn() (mga#3309):
+  	o patch 10: API for quiet mode in ldetect
+  	o patch 8: exit() is not a user-friendly user managment method in a
+library
+  	o move modprobe.default and modprobe.compat from /lib64 to /lib on
+64-bit
+  	  as they are plain text files and that is where modprobe looks for them
+  	o do not automatically mount/umount binfmt_misc fs when binfmt_misc
+  	  module is inserted/removed, it interferes with automatic modprobing
+  	  by mount command and causes boot delays with systemd (mga #2246)
+  	o rediff all patches
+  	o Blacklist viafb (mga #1185)
+- remove ancient trigger on some mdv2008.0 version
+- apply some cosmetics
+- clean out deprecated rpm stuff

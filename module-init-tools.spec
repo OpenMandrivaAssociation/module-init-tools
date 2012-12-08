@@ -7,7 +7,7 @@
 Summary:	Tools for managing Linux kernel modules
 Name:		module-init-tools
 Version:	3.16
-Release:	3
+Release:	5
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/%name-%version.tar.bz2
 Source1:	blacklist-mdv.conf
 Source3:	modprobe.default
@@ -48,7 +48,7 @@ Group:		System/Kernel and hardware
 Url:		http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 BuildRequires:	autoconf2.5
 BuildRequires:	glibc-static-devel
-BuildRequires:	libz-devel
+BuildRequires:	pkgconfig(zlib)
 BuildRequires:	liblzma-devel
 BuildRequires:	docbook-utils docbook-dtd41-sgml
 %if %{with diet}
@@ -143,7 +143,7 @@ install objs-diet/modprobe -D %{buildroot}/sbin/modprobe-static
 %endif
 
 mkdir -p %{buildroot}{%{_libdir},%{_includedir}}
-install -m644 modprobe.h list.h %{buildroot}%{_includedir}
+install -m644 modprobe.h logging.h list.h %{buildroot}%{_includedir}
 
 install -d -m755 %{buildroot}%{_sysconfdir}
 install -d -m755 %{buildroot}%{_sysconfdir}/depmod.d/
@@ -184,8 +184,15 @@ fi
 %if %{with diet}
 %{_prefix}/lib/dietlibc/lib-%{_arch}/libmodprobe.a
 %endif
-/%{_lib}/libmodprobe.la
+#/%{_lib}/libmodprobe.la
 /%{_lib}/libmodprobe.so
 
 %files -n %{libname}
 /%{_lib}/libmodprobe.so.*
+
+%changelog
+* Wed Feb 22 2012 abf
+- The release updated by ABF
+
+* Wed Feb 22 2012 abf
+- The release updated by ABF

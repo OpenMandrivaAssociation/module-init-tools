@@ -1,7 +1,2 @@
 sources:
-  "blacklist-compat.conf:"	1012086c5c1e5858c24acbb4d2cac09391c3a3b2
-  "blacklist-mdv.conf:"	55830cc8318746ba412641dc2971e970996a5427
-  "ipw-no-associate.conf:"	d48eb435fa2bd5388c6044863964edd0238d9ccd
-  "modprobe.default:"	9da9691c5e2357d86b82cd1add350b3b4af24ebb
-  "modprobe.preload:"	703e611b52805d531b8d9ea569c601480a46c9ec
-  "module-init-tools-3.16.tar.bz2:"	919c9fb3e8c73a5790411da1c4d79efda19db195
+  "module-init-tools-3.16.tar.bz2": 919c9fb3e8c73a5790411da1c4d79efda19db195

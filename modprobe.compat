@@ -1,0 +1,26 @@
+# /lib/module-init-tools/modprobe.compat
+# Andrey Borzenkov  <arvidjaar@mail.ru>         09-AUG-2003
+# Nicolas Planel                                2004
+# Thierry Vignaud <tvignaud@mandrakesoft.com>   2004-2005
+#
+# This file contains some compatibility aliases to help in
+# 2.4 -> 2.6 transition
+
+install 3c559            /sbin/modprobe 3c359
+install 3c90x            /sbin/modprobe 3c59x
+install aironet4500_card /sbin/modprobe airo
+install alim1535d_wdt    /sbin/modprobe alim1535_wdt
+install amd768_rng       /sbin/modprobe hw_random
+install amd7xx_tco       /sbin/modprobe hw_random
+install audigy           /sbin/modprobe snd-emu10k1
+install dc395x_trm       /sbin/modprobe dc395x
+install i810_rng         /sbin/modprobe hw_random
+install i810-tco         /sbin/modprobe i8xx_tco
+install it8212           /sbin/modprobe it821x
+install iteraid          /sbin/modprobe it821x
+install pdc-ultra        /sbin/modprobe sata_promise
+install printer          /sbin/modprobe usblp
+install tulip_old        /sbin/modprobe tulip
+install uhci             /sbin/modprobe uhci-hcd
+install usb-ohci         /sbin/modprobe ohci-hcd
+install usb-uhci         /sbin/modprobe uhci-hcd
