@@ -45,7 +45,7 @@ Patch10:	module-init-tools-3.16-libify-7.patch
 Patch20:	module-init-tools-3.16-xz-support.patch
 License:	GPLv2+
 Group:		System/Kernel and hardware
-Url:		http://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
+Url:		https://www.kernel.org/pub/linux/utils/kernel/module-init-tools/
 BuildRequires:	autoconf2.5
 BuildRequires:	glibc-static-devel
 BuildRequires:	pkgconfig(zlib)
